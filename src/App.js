@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LoginPage from "./page/LoginPage/LoginPage";
+import CyberBugs from "./page/HomePage/CyberBugs";
+import SignupPage from "./page/SignupPage/SignupPage";
+import CreateProject from "./page/HomePage/CreateProject/CreateProject";
+import SidebarCyberBugs from "./page/HomePage/SidebarCyberBugs";
+import HomeTemplate from "./page/HomeTemplate/HomeTemplate";
+import Spinner from "./components/Spinner/Spinner";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Spinner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="/" element={<HomeTemplate />}>
+            <Route index element={<CyberBugs />} />
+            <Route path="create" element={<CreateProject />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
