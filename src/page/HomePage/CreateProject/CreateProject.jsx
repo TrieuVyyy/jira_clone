@@ -3,6 +3,9 @@ import React, { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
 export default function CreateProject() {
+  const handleEditorChange = (content, editor) => {
+    console.log('Content was update:', content);
+  }
   return (
     <div className="container p-4">
       <h1 className="font-bold text-2xl ml-20">Create Project</h1>
@@ -18,7 +21,6 @@ export default function CreateProject() {
         <div className="form-group p-2">
           <p className="p-2 text-sm font-light">Description</p>
           <Editor
-            apiKey="owrcj1vln2r9ggx5ffkbukeiylmcfdo8dtt6pyfop37lamyj"
             init={{
               plugins:
                 "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss",
@@ -35,7 +37,8 @@ export default function CreateProject() {
                   Promise.reject("See docs to implement AI Assistant")
                 ),
             }}
-            initialValue="Welcome to TinyMCE!"
+            initialValue=""
+            onEditorChange={handleEditorChange}
           />
         </div>
         <div className="form-group p-2">

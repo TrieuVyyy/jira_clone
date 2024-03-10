@@ -24,9 +24,9 @@ const FormLogin = () => {
         dispatch(setUser(res.data.content));
         // lưu data xuống localStorage để user load trang sẽ không mất data
         let dataJson = JSON.stringify(res.data.content);
-        localStorage.setItem("USER_SIGNIN", dataJson);
+        localStorage.setItem("USER_INFOR", dataJson);
         message.success("Login success");
-        console.log()
+        console.log();
       })
       .catch((err) => {
         message.error("Login fail");
@@ -58,6 +58,7 @@ const FormLogin = () => {
           name="email"
           rules={[
             {
+              type: "email",
               required: true,
               message: "Please input your email!",
             },
@@ -90,15 +91,18 @@ const FormLogin = () => {
 
         <Form.Item>
           <Button
-          className="bg-blue-600"
+            className="bg-blue-600"
             type="primary"
             htmlType="submit"
             size="large"
-            style={{ width: "100%", color: "#fff"}}
+            style={{ width: "100%", color: "#fff" }}
           >
             Login
           </Button>
-          Or <a className="text-blue-600" href="">register now!</a>
+          Or{" "}
+          <a className="text-blue-600" href="">
+            register now!
+          </a>
         </Form.Item>
       </Form>
 

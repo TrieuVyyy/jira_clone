@@ -8,7 +8,7 @@ import { Layout, Menu, theme, Flex } from "antd";
 import { SiJirasoftware } from "react-icons/si";
 
 
-const { Header, Sider, Content, Footer } = Layout;
+const { Sider } = Layout;
 
 const SidebarCyberBugs = () => {
   const [collapsed, setCollapsed] = useState(false);

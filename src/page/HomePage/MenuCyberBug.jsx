@@ -31,6 +31,14 @@ const items = [
     []
   ),
   getItem(
+    <NavLink to={"project"} activeClassname="active">
+      Project Manager
+    </NavLink>,
+    "sub 2",
+    <PlusCircleOutlined />,
+    []
+  ),
+  getItem(
     <NavLink to={"create"} activeClassname="active">
       Create project
     </NavLink>,
@@ -38,6 +46,7 @@ const items = [
     <PlusCircleOutlined />,
     []
   ),
+  
   getItem("Releases", "sub 3", <TruckOutlined />, []),
   getItem("Issue and filters", "sub 4", <FilterOutlined />, []),
   getItem("Pages", "sub 5", <FileTextOutlined />, []),

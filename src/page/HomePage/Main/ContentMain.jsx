@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Col, Row } from "antd";
 import {
   CheckSquareFilled,
@@ -8,18 +8,29 @@ import {
 import avt1 from "../../../assets/images/avt1.png";
 import avt2 from "../../../assets/images/avt2.png";
 import avt3 from "../../../assets/images/avt3.png";
+import Image from "react-bootstrap/Image";
+import ModalCyberBugs from "../Modal/ModalCyberBugs";
 
 const gridStyle = {
   width: "100%",
 };
 
 export default function ContentMain() {
+  const [modalShow, setModalShow] = useState(false);
+  const handleClose = () => {
+    setModalShow(false);
+  };
+  const handleShow = () => {
+    setModalShow(true);
+  };
+
   return (
     <div className="content">
       <Row gutter={12}>
         <Col span={6}>
-          <Card title="BACKBLOG 4" style={{backgroundColor: 'gainsboro'}}>
-            <Card.Grid style={gridStyle}>
+          <Card title="BACKBLOG" style={{ backgroundColor: "gainsboro" }}>
+            <Card.Grid style={gridStyle} onClick={handleShow}>
+              <ModalCyberBugs show={modalShow} onHide={handleClose} />
               <ul className="list-group list-group-flush">
                 <li
                   className="list-group-item"
@@ -40,7 +51,11 @@ export default function ContentMain() {
                     <div className="block-right ml-16">
                       <div className="avatar-group flex">
                         <div className="avatar">
-                          <img src={avt1} alt="1" style={{ width: "24px" }} />
+                          <Image
+                            src={avt1}
+                            style={{ width: "30px" }}
+                            roundedCircle
+                          />
                         </div>
                       </div>
                     </div>
@@ -69,7 +84,11 @@ export default function ContentMain() {
                     <div className="block-right ml-16">
                       <div className="avatar-group flex">
                         <div className="avatar">
-                          <img src={avt2} alt="2" style={{ width: "24px" }} />
+                          <Image
+                            src={avt1}
+                            style={{ width: "30px" }}
+                            roundedCircle
+                          />
                         </div>
                       </div>
                     </div>
@@ -98,7 +117,11 @@ export default function ContentMain() {
                     <div className="block-right ml-16">
                       <div className="avatar-group flex">
                         <div className="avatar">
-                          <img src={avt2} alt="2" style={{ width: "24px" }} />
+                          <Image
+                            src={avt1}
+                            style={{ width: "30px" }}
+                            roundedCircle
+                          />
                         </div>
                       </div>
                     </div>
@@ -109,7 +132,10 @@ export default function ContentMain() {
           </Card>
         </Col>
         <Col span={6}>
-          <Card title="SELECTED FOR DEVELOPMENT 2" style={{backgroundColor: 'gainsboro'}}>
+          <Card
+            title="SELECTED FOR DEVELOPMENT"
+            style={{ backgroundColor: "gainsboro" }}
+          >
             <Card.Grid style={gridStyle}>
               <ul className="list-group list-group-flush">
                 <li
@@ -131,7 +157,11 @@ export default function ContentMain() {
                     <div className="block-right ml-16">
                       <div className="avatar-group flex">
                         <div className="avatar">
-                          <img src={avt2} alt="2" style={{ width: "24px" }} />
+                          <Image
+                            src={avt1}
+                            style={{ width: "30px" }}
+                            roundedCircle
+                          />
                         </div>
                       </div>
                     </div>
@@ -160,7 +190,11 @@ export default function ContentMain() {
                     <div className="block-right ml-16">
                       <div className="avatar-group flex">
                         <div className="avatar">
-                          <img src={avt2} alt="2" style={{ width: "24px" }} />
+                          <Image
+                            src={avt1}
+                            style={{ width: "30px" }}
+                            roundedCircle
+                          />
                         </div>
                       </div>
                     </div>
@@ -171,9 +205,9 @@ export default function ContentMain() {
           </Card>
         </Col>
         <Col span={6}>
-          <Card title="IN PROGRESS 1" style={{backgroundColor: 'gainsboro'}}>
-          <Card.Grid style={gridStyle}>
-            <ul className="list-group list-group-flush">
+          <Card title="IN PROGRESS" style={{ backgroundColor: "gainsboro" }}>
+            <Card.Grid style={gridStyle}>
+              <ul className="list-group list-group-flush">
                 <li
                   className="list-group-item"
                   data-toggle="modal"
@@ -183,14 +217,21 @@ export default function ContentMain() {
                   <p className="pb-2">Lorem ipsum dolor sit amet.</p>
                   <div className="flex">
                     <div className="block-left">
-                    <CheckSquareFilled className="mr-2" style={{color: 'skyblue'}}/>
-                    <ArrowDownOutlined style={{color: 'greenyellow'}}/>
+                      <CheckSquareFilled
+                        className="mr-2"
+                        style={{ color: "skyblue" }}
+                      />
+                      <ArrowDownOutlined style={{ color: "greenyellow" }} />
                     </div>
 
                     <div className="block-right ml-16">
                       <div className="avatar-group flex">
                         <div className="avatar">
-                          <img src={avt2} alt="2" style={{width: "24px"}}/>
+                          <Image
+                            src={avt1}
+                            style={{ width: "30px" }}
+                            roundedCircle
+                          />
                         </div>
                       </div>
                     </div>
@@ -201,9 +242,9 @@ export default function ContentMain() {
           </Card>
         </Col>
         <Col span={6}>
-          <Card title="DONE 1" style={{backgroundColor: 'gainsboro'}}>
-          <Card.Grid style={gridStyle}>
-            <ul className="list-group list-group-flush">
+          <Card title="DONE" style={{ backgroundColor: "gainsboro" }}>
+            <Card.Grid style={gridStyle}>
+              <ul className="list-group list-group-flush">
                 <li
                   className="list-group-item"
                   data-toggle="modal"
@@ -213,21 +254,28 @@ export default function ContentMain() {
                   <p className="pb-2">Lorem ipsum dolor sit amet.</p>
                   <div className="flex">
                     <div className="block-left">
-                    <CheckSquareFilled className="mr-2" style={{color: 'skyblue'}}/>
-                    <ArrowDownOutlined style={{color: 'red'}}/>
+                      <CheckSquareFilled
+                        className="mr-2"
+                        style={{ color: "skyblue" }}
+                      />
+                      <ArrowDownOutlined style={{ color: "red" }} />
                     </div>
 
                     <div className="block-right ml-16">
                       <div className="avatar-group flex">
                         <div className="avatar">
-                          <img src={avt3} alt="3" style={{width: "24px"}}/>
+                          <Image
+                            src={avt1}
+                            style={{ width: "30px" }}
+                            roundedCircle
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
                 </li>
               </ul>
-            </Card.Grid>  
+            </Card.Grid>
           </Card>
         </Col>
       </Row>
