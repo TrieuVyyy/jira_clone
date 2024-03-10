@@ -22,7 +22,8 @@ export default function ListProject() {
 
   return (
     <div className="container p-5">
-      <MyPagination data = {projectList}/>
+      <h3 className="py-4 text-gray-500">Projects List</h3>
+      <MyPagination data={projectList} />
     </div>
   );
 }
