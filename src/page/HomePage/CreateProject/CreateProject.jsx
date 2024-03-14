@@ -1,5 +1,4 @@
 import { Button, message } from "antd";
-import { Form } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { https } from "../../../service/api";
@@ -26,9 +25,6 @@ export default function CreateProject() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleCategory = (e) => {
-    setFormData({ ...formData, [e.target.category]: e.target.value });
-  };
 
   const handleCrate = () => {
     https
@@ -74,11 +70,11 @@ export default function CreateProject() {
           <label className="text-sm font-light">Project Category</label>
 
           <select
-            className="form-control"
+            className="form-select"
             name="category"
-            onChange={handleCategory}
+            onChange={handleOnChange}
           >
-            <option value="">Choose Category Name</option>
+            <option selected value="">Choose Category Name</option>
             {categoryList.map((category) => (
               <option value={category.name} key={category.id}>
                 {category.projectCategoryName}

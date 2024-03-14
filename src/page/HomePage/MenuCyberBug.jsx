@@ -40,7 +40,7 @@ const items = [
   ),
   getItem(
     <NavLink to={"create"} activeClassname="active">
-      Create project
+      Create Project
     </NavLink>,
     "sub 2",
     <PlusCircleOutlined />,

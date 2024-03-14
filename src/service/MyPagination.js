@@ -23,18 +23,18 @@ export default function MyPagination(props) {
     setItemOffset(newOffset);
   };
 
+
   const handleDelete = (id) => {
     https
       .delete(`/api/Project/deleteProject/${id}`)
       .then((res) => {
-        const updatedData = data.filter((project) => project.id !== id);
-        message.success("Deleted successfully");
-        console.log(res);
-        setCurrentItems(updatedData);
+        console.log(res)
+        message.success("Project deleted successfully");
+        setCurrentItems();
       })
-      .catch((error) => {
+      .catch((err) => {
         message.error("Failed to delete project");
-        console.error("Delete error:", error);
+        console.error(err);
       });
   };
 

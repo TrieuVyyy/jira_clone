@@ -8,8 +8,10 @@ import CreateProject from "./page/HomePage/CreateProject/CreateProject";
 import SidebarCyberBugs from "./page/HomePage/SidebarCyberBugs";
 import HomeTemplate from "./page/HomeTemplate/HomeTemplate";
 import Spinner from "./components/Spinner/Spinner";
-import ModalCyberBugs from "./page/HomePage/Modal/ModalCyberBugs";
+import ModalCyberBugs from "./page/HomePage/TaskDetail/TaskDetail";
 import ProjectManager from "./page/HomePage/ProjectManager/ProjectManager";
+import CreateIssue from "./page/HomePage/CreateTask/CreateTask";
+import CreateTask from "./page/HomePage/CreateTask/CreateTask";
 
 function App() {
   return (
@@ -21,7 +23,8 @@ function App() {
           <Route path="/" element={<HomeTemplate />}>
             <Route index element={<CyberBugs />} />
             <Route path="create" element={<CreateProject />} />
-            <Route path="project" element={<ProjectManager />}/>
+            <Route path="project" element={<ProjectManager />} />
+            <Route path="creattask" element={<CreateTask />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -11,7 +11,6 @@ export default function ListProject() {
     https
       .get("/api/Project/getAllProject")
       .then((res) => {
-        console.log(res);
         setProjectList(res.data.content);
         message.success("Get data successfully");
       })
