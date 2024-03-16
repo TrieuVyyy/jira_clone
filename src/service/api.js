@@ -4,12 +4,14 @@ import axios from "axios";
 import { store } from "../index";
 import { setLoadingOff, setLoadingOn } from "../redux/spinnerSlice";
 
+const accessToken=JSON.parse(localStorage.getItem("USER_INFOR"))?.accessToken
+
 export let https = axios.create({
   baseURL: "https://jiranew.cybersoft.edu.vn",
   headers: {
     TokenCybersoft:
       "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJqaXJhY3liZXJAZ21haWwuY29tIiwibmJmIjoxNzA5MTk4NjQ3LCJleHAiOjE3MDkyMDIyNDd9.IzekI-KN2k5kunUgUVVTxa9nEckypFD9vzFFTUuca7Y",
-    Authorization: "bearer " + JSON.parse(localStorage.getItem("USER_INFOR"))?.accessToken,
+    Authorization: "Bearer " + accessToken,
   },
 });
 

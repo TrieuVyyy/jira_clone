@@ -25,10 +25,9 @@ export default function CreateProject() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   const handleCrate = () => {
     https
-      .post("/api/Project/createProject", formData)
+      .post("/api/Project/createProjectAuthorize", formData)
       .then((res) => {
         navigate("/project");
         setFormData(res.data.content);
@@ -71,12 +70,14 @@ export default function CreateProject() {
 
           <select
             className="form-select"
-            name="category"
+            name="categoryId"
             onChange={handleOnChange}
           >
-            <option selected value="">Choose Category Name</option>
+            <option selected value="">
+              Choose Category Name
+            </option>
             {categoryList.map((category) => (
-              <option value={category.name} key={category.id}>
+              <option value={category.id} key={category.id}>
                 {category.projectCategoryName}
               </option>
             ))}
@@ -85,7 +86,7 @@ export default function CreateProject() {
           <Button
             className="bg-green-700 mt-3"
             type="primary"
-            // htmlType="submit"
+            htmlType="submit"
             style={{ color: "#fff" }}
             onClick={handleCrate}
           >

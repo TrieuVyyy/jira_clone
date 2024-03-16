@@ -19,6 +19,7 @@ function App() {
       <Spinner />
       <BrowserRouter>
         <Routes>
+          <Route path="signup" element={<SignupPage />}/>
           <Route path="login" element={<LoginPage />} />
           <Route path="/" element={<HomeTemplate />}>
             <Route index element={<CyberBugs />} />

@@ -26,7 +26,7 @@ export default function MyPagination(props) {
 
   const handleDelete = (id) => {
     https
-      .delete(`/api/Project/deleteProject/${id}`)
+      .delete(`/api/Project/deleteProject?projectId=${id}`)
       .then((res) => {
         console.log(res)
         message.success("Project deleted successfully");
@@ -53,7 +53,7 @@ export default function MyPagination(props) {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((project) => (
+            {currentItems?.map((project) => (
               <tr key={project.id}>
                 <td>{project.id}</td>
                 <td style={{ color: "orangered" }}>{project.projectName}</td>

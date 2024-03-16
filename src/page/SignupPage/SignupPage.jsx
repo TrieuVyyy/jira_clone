@@ -3,7 +3,10 @@ import FormSigup from "./FormSigup";
 
 export default function SignupPage() {
   return (
-    <div className="container">
+    <div className="container d-flex">
+      <div className="w-2/3">
+        <img alt="" src="https://picsum.photos/500" style={{ width: "100%", height: '100%'}} />
+      </div>
       <FormSigup />
     </div>
   );
