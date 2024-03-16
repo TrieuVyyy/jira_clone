@@ -25,13 +25,18 @@ export default function CreateProject() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleCrate = () => {
+  const handleSelect = (e) => {
+    setFormData({ ...formData, [e.target.category]: e.target.value });
+  };
+
+  const handleCreate = () => {
     https
       .post("/api/Project/createProjectAuthorize", formData)
       .then((res) => {
         navigate("/project");
+        console.log(res.data.content);
         setFormData(res.data.content);
-        message.success("Create new projects successfully");
+        message.success("Create new project successfully");
       })
       .catch((err) => {
         message.error("Failed to create project");
@@ -71,7 +76,7 @@ export default function CreateProject() {
           <select
             className="form-select"
             name="categoryId"
-            onChange={handleOnChange}
+            onChange={handleSelect}
           >
             <option selected value="">
               Choose Category Name
@@ -88,7 +93,7 @@ export default function CreateProject() {
             type="primary"
             htmlType="submit"
             style={{ color: "#fff" }}
-            onClick={handleCrate}
+            onClick={handleCreate}
           >
             Submit
           </Button>

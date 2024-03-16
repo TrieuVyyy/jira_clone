@@ -101,21 +101,6 @@ const FormSignup = () => {
             <Input.Password prefix={<AiFillLock />} placeholder="Password" />
           </Form.Item>
 
-          {/* <Form.Item
-            name="passWord"
-            rules={[
-              {
-                required: true,
-                message: "Confirm Password is required!",
-              },
-            ]}
-          >
-            <Input.Password
-              prefix={<AiFillLock />}
-              placeholder="Confirm Password"
-            />
-          </Form.Item> */}
-
           <Form.Item
             wrapperCol={{
               offset: 0,
