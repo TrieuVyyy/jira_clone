@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { https } from "../../../../service/api";
 import ListComment from "./ListComment";
 import { Image, FloatingLabel, Form, Button } from "react-bootstrap";
-import avt1 from "../../../../assets/images/avt1.png";
+import avt1 from "../../../assets/images/avt1.png";
 
 export default function Comment() {
   return (

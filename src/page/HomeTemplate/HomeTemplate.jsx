@@ -2,7 +2,6 @@ import React from "react";
 import SidebarCyberBugs from "../HomePage/SidebarCyberBugs";
 import { Outlet } from "react-router-dom";
 import MenuCyberBug from "../HomePage/MenuCyberBug";
-import ModalCyberBugs from "../HomePage/TaskDetail/TaskDetail";
 
 export default function HomeTemplate() {
   return (

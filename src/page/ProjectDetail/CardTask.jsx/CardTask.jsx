@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { https } from "../../../../service/api";
+import { https } from "../../../service/api";
 import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import TaskDetail from "../../TaskDetail/TaskDetail";
 import Badge from "react-bootstrap/Badge";

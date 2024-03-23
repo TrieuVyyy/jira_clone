@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Image, Button, Form, FloatingLabel } from "react-bootstrap";
-import avt1 from "../../../../assets/images/avt1.png";
-import { https } from "../../../../service/api";
+import avt1 from "../../../assets/images/avt1.png";
+import { https } from "../../../service/api";
+
 
 export default function ListComment() {
   const [formData, setFormData] = useState([]);

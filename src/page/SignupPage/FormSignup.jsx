@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { https } from "../../service/api";
@@ -28,18 +28,20 @@ const FormSignup = () => {
         message.success("Account created successfully!");
       })
       .catch((err) => {
-        message.success("Signup failed");
+        message.error("Signup failed");
         console.log(err);
       });
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
   return (
     <div className="signup-page ml-20 pt-32">
       <div className="signup-form-container">
-        <h1 className="title text-center pb-4">Sign Up</h1>
-
+        <h1 className="title text-center pb-4 font-semibold font-mono">
+          Sign Up
+        </h1>
         <Form
           name="basic"
           layout="vertical"
@@ -90,7 +92,7 @@ const FormSignup = () => {
           </Form.Item>
 
           <Form.Item
-            name="passWord"
+            name="password"
             rules={[
               {
                 required: true,
@@ -111,6 +113,7 @@ const FormSignup = () => {
               Sign Up
             </Button>
           </Form.Item>
+          <a href="/login">Already have an account?</a>
         </Form>
       </div>
     </div>

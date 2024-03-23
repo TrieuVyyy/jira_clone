@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { https } from "../../../service/api";
+import { https } from "../../service/api";
+
 
 export default function TaskType() {
   const [taskList, setTaskList] = useState([]);

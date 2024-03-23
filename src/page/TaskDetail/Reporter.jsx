@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { https } from "../../../service/api";
 
 export default function Reporter() {
   return (

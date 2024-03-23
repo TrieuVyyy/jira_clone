@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { https } from "../../../service/api";
+import { https } from "../../service/api";
 import { useNavigate } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -8,6 +8,7 @@ import TaskType from "../TaskDetail/TaskType";
 import Reporter from "../TaskDetail/Reporter";
 import Assignees from "../TaskDetail/Assignees";
 import Priority from "../TaskDetail/Priority";
+
 
 export default function CreateTask() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { https } from "../../../service/api";
+import { https } from "../../service/api";
 import { message } from "antd";
-import MyPagination from "../../../service/MyPagination";
+import MyPagination from "../../service/MyPagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function ListProject() {

@@ -38,7 +38,7 @@ const FormLogin = () => {
   return (
     <div className="login-page ml-20 pt-32">
       <div className="login-form-container">
-        <h1 className="p-5 text-center text-2xl font-semibold font-mono">
+        <h1 className="title text-center pb-4 font-semibold font-mono">
           Login CyberBugs
         </h1>
         <Form
@@ -84,7 +84,7 @@ const FormLogin = () => {
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
 
-            <a className="ml-12 text-blue-600" href="">
+            <a className="ml-28" href="">
               Forgot password
             </a>
           </Form.Item>
@@ -98,10 +98,7 @@ const FormLogin = () => {
             >
               Login
             </Button>
-            Or{" "}
-            <a className="text-blue-600" href="/signup">
-              register now!
-            </a>
+            Or <a href="/signup">sign up now!</a>
           </Form.Item>
         </Form>
 

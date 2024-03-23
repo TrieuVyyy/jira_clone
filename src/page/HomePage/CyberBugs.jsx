@@ -1,7 +1,7 @@
 import React from "react";
-import HeaderMain from "./Main/HeaderMain";
-import InfoMain from "./Main/InfoMain";
-import ContentMain from "./Main/ContentMain";
+import HeaderMain from '../ProjectDetail/HeaderMain'
+import InfoMain from "../ProjectDetail/InfoMain";
+import ContentMain from "../ProjectDetail/ContentMain";
 
 export default function CyberBugs() {
   return (

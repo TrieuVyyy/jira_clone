@@ -1,41 +1,33 @@
 import { Button, message } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { https } from "../../../service/api";
+import { https } from "../../service/api";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CategoryProject from "./CategoryProject";
 
 export default function CreateProject() {
   const navigate = useNavigate();
-  const [categoryList, setCategoryList] = useState([]);
   const [formData, setFormData] = useState([]);
-
-  useEffect(() => {
-    https
-      .get("/api/ProjectCategory")
-      .then((res) => {
-        setCategoryList(res.data.content);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSelect = (e) => {
-    setFormData({ ...formData, [e.target.category]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleCreate = () => {
+  const handleCreate = (e) => {
+    e.preventDefault()
     https
       .post("/api/Project/createProjectAuthorize", formData)
       .then((res) => {
-        navigate("/project");
         console.log(res.data.content);
-        setFormData(res.data.content);
+        navigate("/project");
         message.success("Create new project successfully");
       })
       .catch((err) => {
@@ -61,32 +53,15 @@ export default function CreateProject() {
           <CKEditor
             editor={ClassicEditor}
             data=""
-            onReady={(editor) => {}}
             onChange={(event, editor) => {
               const data = editor.getData();
               setFormData({ ...formData, description: data });
             }}
-            onBlur={(event, editor) => {}}
-            onFocus={(event, editor) => {}}
           />
         </div>
         <div className="form-group p-2">
           <label className="text-sm font-light">Project Category</label>
-
-          <select
-            className="form-select"
-            name="categoryId"
-            onChange={handleSelect}
-          >
-            <option selected value="">
-              Choose Category Name
-            </option>
-            {categoryList.map((category) => (
-              <option value={category.id} key={category.id}>
-                {category.projectCategoryName}
-              </option>
-            ))}
-          </select>
+          <CategoryProject onChange={handleSelect} name="projectCategoryName" />
 
           <Button
             className="bg-green-700 mt-3"

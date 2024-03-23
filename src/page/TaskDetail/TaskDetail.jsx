@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Col,
-  Modal,
-  Row,
-  Form,
-  Container,
-} from "react-bootstrap";
+import { Button, Col, Modal, Row, Form, Container } from "react-bootstrap";
 import {
   BsFillSendPlusFill,
   BsLink45Deg,
@@ -16,7 +9,7 @@ import {
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import TaskType from "./TaskType";
-import { https } from "../../../service/api";
+// import { https } from "../../../service/api";
 import TaskStatus from "./TaskStatus";
 import Assignees from "./Assignees";
 import Comment from "./TaskComment/Comment";
@@ -42,7 +35,7 @@ export default function TaskDetail(props) {
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.issue]: e.target.value });
   };
-  
+
   return (
     <Modal
       show={show}
@@ -51,7 +44,7 @@ export default function TaskDetail(props) {
       size="xl"
       centered
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Container>
           <Row>
             <Col xs={7}>
@@ -73,6 +66,7 @@ export default function TaskDetail(props) {
                 <button className="p-2 ml-5">
                   <BsFillTrash3Fill size={"20px"} />
                 </button>
+                <button className="btn-close" data-dismiss="modal"></button>
               </div>
             </Col>
           </Row>
@@ -88,7 +82,7 @@ export default function TaskDetail(props) {
                 placeholder="Short summary"
                 style={{ width: "100%", height: "78px" }}
               >
-                
+
               </textarea>
             </div>
             <div className="description">
