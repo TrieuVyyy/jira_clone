@@ -9,28 +9,28 @@ import {
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import TaskType from "./TaskType";
-// import { https } from "../../../service/api";
+import { https } from "../../service/api";
 import TaskStatus from "./TaskStatus";
 import Assignees from "./Assignees";
 import Comment from "./TaskComment/Comment";
 import Reporter from "./Reporter";
 import Priority from "./Priority";
-import ListComment from "./TaskComment/ListComment";
+import ListComment from "./TaskComment/ListComment";  
 
 export default function TaskDetail(props) {
   const { show, handleClose } = props;
   const [formData, setFormData] = useState([]);
 
-  // useEffect(() => {
-  //   https
-  //     .get("/api/Project/getTaskDetail")
-  //     .then((res) => {
-  //       setFormData(res.data.content);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, []);
+  useEffect(() => {
+    https
+      .get("/api/Project/getTaskDetail")
+      .then((res) => {
+        setFormData(res.data.content);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.issue]: e.target.value });

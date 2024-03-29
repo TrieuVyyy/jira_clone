@@ -23,7 +23,7 @@ function App() {
             <Route index element={<CyberBugs />} />
             <Route path="/create" element={<CreateProject />} />
             <Route path="/project" element={<ProjectManager />} />
-            <Route path="/detail" element={<ProjectDetail />} />
+            <Route path="/detail/:id" element={<ProjectDetail />} />
             <Route path="/creattask" element={<CreateTask />} />
           </Route>
         </Routes>

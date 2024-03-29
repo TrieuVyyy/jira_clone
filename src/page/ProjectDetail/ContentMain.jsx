@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CardTask from "./CardTask.jsx/CardTask";
+import TaskList from "./TaskList/TaskList";
 
 const gridStyle = {
   width: "100%",
@@ -8,7 +8,7 @@ const gridStyle = {
 export default function ContentMain() {
   return (
     <div className="content">
-      <CardTask />
+      <TaskList />
     </div>
   );
 }

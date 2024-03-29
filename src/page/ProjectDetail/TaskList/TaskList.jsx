@@ -4,9 +4,11 @@ import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import TaskDetail from "../../TaskDetail/TaskDetail";
 import Badge from "react-bootstrap/Badge";
 
-export default function CardTask() {
+export default function TaskList() {
   const [status, setStatus] = useState([]);
   const [modalShow, setModalShow] = useState(false);
+  const [taskList, setTaskList] = useState([])
+
   const handleClose = () => {
     setModalShow(false);
   };
@@ -19,6 +21,17 @@ export default function CardTask() {
       .get("/api/Status/getAll")
       .then((res) => {
         setStatus(res.data.content);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect((id) => {
+    https
+      .get(`/api/Project/getTaskDetail?taskId=${id}`)
+      .then((res) => {
+        setTaskList(res.data.content);
       })
       .catch((err) => {
         console.log(err);
@@ -50,7 +63,10 @@ export default function CardTask() {
             </Card.Title>
             <ListGroup variant="flush">
               <ListGroupItem action onClick={handleShow}>
-                <TaskDetail show={modalShow} onHide={handleClose} />
+                {taskList.map((task) => {
+                  <TaskDetail value={task.taskId} show={modalShow} onHide={handleClose} />
+                })}
+                
               </ListGroupItem>
             </ListGroup>
           </Card.Body>

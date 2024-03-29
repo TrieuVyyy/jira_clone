@@ -6,15 +6,14 @@ import { https } from "./api";
 import { message } from "antd";
 import CategoryProject from "../page/CreateProject/CategoryProject";
 
-
 export default function MyPagination(props) {
   const { data } = props;
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const itemsPerPage = 8;
-  const [isEditOpen, setIsEditOpen] = useState(false); 
-  const [editedProject, setEditedProject] = useState({})
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editedProject, setEditedProject] = useState([]);
 
   useEffect(() => {
     const endOffSet = itemOffset + itemsPerPage;
@@ -22,8 +21,8 @@ export default function MyPagination(props) {
     setPageCount(Math.ceil(data.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, data]);
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % data.length;
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % data.length;
     setItemOffset(newOffset);
   };
 
@@ -31,7 +30,7 @@ export default function MyPagination(props) {
     https
       .delete(`/api/Project/deleteProject?projectId=${id}`)
       .then((res) => {
-        message.success("Project deleted successfully");
+        message.success("Deleted successful");
         setCurrentItems();
       })
       .catch((err) => {
@@ -44,22 +43,31 @@ export default function MyPagination(props) {
     if (projectToEdit) {
       setEditedProject(projectToEdit);
       setIsEditOpen(true); // Open edit mode
+      window.history.pushState({}, "", `?projectId=${id}`);
     } else {
       console.error("Project not found for editing:", id);
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = (id) => {
     if (!editedProject.id) {
       console.error("Missing project ID for update");
       return;
     }
     https
-      .put(`/api/Project/updateProject${editedProject.id}`, editedProject)
+      .put(
+        `/api/Project/updateProject?projectId=${editedProject.id}`,
+        JSON.stringify(editedProject)
+      )
       .then((res) => {
-        console.log(res);
+        console.log(res.data.content);
         message.success("Update successful");
         setIsEditOpen(false); // Close edit mode
+
+        const updatedData = data.map((project) =>
+          project.id === id ? editedProject : project
+        );
+        setCurrentItems(updatedData);
       })
       .catch((err) => {
         console.log(err);
@@ -87,7 +95,7 @@ export default function MyPagination(props) {
           </thead>
           <tbody>
             {currentItems?.map((project) =>
-              isEditOpen && project.id === editedProject.id  ? (
+              isEditOpen && project.id === editedProject.id ? (
                 <tr>
                   <td>{project.id}</td>
                   <td>
@@ -117,7 +125,10 @@ export default function MyPagination(props) {
                     <button onClick={handleUpdate} className="btn btn-info">
                       Update
                     </button>
-                    <button onClick={() => setIsEditOpen(false)} className="btn btn-outline-secondary btn-sm">
+                    <button
+                      onClick={() => setIsEditOpen(false)}
+                      className="btn btn-outline-secondary btn-sm"
+                    >
                       Cancel
                     </button>
                   </td>
@@ -125,10 +136,19 @@ export default function MyPagination(props) {
               ) : (
                 <tr key={project.id}>
                   <td>{project.id}</td>
-                  <td style={{ color: "orangered" }}>{project.projectName}</td>
-                  <td style={{ color: "olivedrab" }}>{project.categoryName}</td>
-                  <td>{project.description}</td>
-                  <td style={{ color: "gray" }}>
+                  <td>
+                    <a
+                      className="text-decoration-none"
+                      href={`detail/${project.id}`}
+                    >
+                      {project.projectName}
+                    </a>
+                  </td>
+                  <td style={{ color: "goldenrod" }} className="font-medium">
+                    {project.categoryName}
+                  </td>
+                  <td>{project.members && project.members.name}</td>
+                  <td className="badge text-bg-success text-uppercase text-wrap">
                     {project.creator && project.creator.name}
                   </td>
                   <td>
