@@ -45,7 +45,7 @@ const FormLogin = () => {
           name="normal_login"
           layout="vertical"
           style={{
-            maxWidth: 1000,
+            maxWidth: 500,
           }}
           initialValues={{
             remember: true,

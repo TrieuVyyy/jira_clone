@@ -10,7 +10,7 @@ export let https = axios.create({
   baseURL: "https://jiranew.cybersoft.edu.vn",
   headers: {
     TokenCybersoft:
-      "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJqaXJhY3liZXJAZ21haWwuY29tIiwibmJmIjoxNzA5MTk4NjQ3LCJleHAiOjE3MDkyMDIyNDd9.IzekI-KN2k5kunUgUVVTxa9nEckypFD9vzFFTUuca7Y",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA1OCIsIkhldEhhblN0cmluZyI6IjE2LzA2LzIwMjQiLCJIZXRIYW5UaW1lIjoiMTcxODQ5NjAwMDAwMCIsIm5iZiI6MTY5MDM5MDgwMCwiZXhwIjoxNzE4NjQzNjAwfQ.g1qTwikJUdmDmNIzw2Qe8RjiRNvvnH54uKQRLeOC0RU",
     Authorization: "Bearer " + accessToken,
   },
 });
