@@ -8,67 +8,78 @@ import {
   LineChartOutlined,
   InboxOutlined,
 } from "@ant-design/icons";
-import { Menu } from "antd";
+import { Menu, theme } from "antd";
 import logo from "../../assets/images/jiralogo.png";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function getItem(label, key, icon, children, type) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-  };
-}
 const items = [
-  getItem(
-    <NavLink to={'/'} activeClassname="active">
-      Cyber Board
-    </NavLink>,
-    "sub 1",
-    <ProductOutlined />,
-    []
-  ),
-  getItem(
-    <NavLink to={"project"} activeClassname="active">
-      Project Manager
-    </NavLink>,
-    "sub 2",
-    <PlusCircleOutlined />,
-    []
-  ),
-  getItem(
-    <NavLink to={"create"} activeClassname="active">
-      Create Project
-    </NavLink>,
-    "sub 2",
-    <PlusCircleOutlined />,
-    []
-  ),
-  
-  getItem("Releases", "sub 3", <TruckOutlined />, []),
-  getItem("Issue and filters", "sub 4", <FilterOutlined />, []),
-  getItem("Pages", "sub 5", <FileTextOutlined />, []),
-  getItem("Report", "sub 6", <LineChartOutlined />, []),
-  getItem("Component", "sub 7", <InboxOutlined />, []),
+  {
+    key: "board",
+    icon: <ProductOutlined />,
+    label: <Link to="/" className="text-decoration-none">Cyber Board</Link>,
+  },
+  {
+    key: "project",
+    icon: <PlusCircleOutlined />,
+    label: <Link to="/project" className="text-decoration-none">Project Manager</Link>,
+  },
+  {
+    key: "create",
+    icon: <PlusCircleOutlined />,
+    label: <Link to="/create" className="text-decoration-none">Create Project</Link>,
+  },
+  {
+    key: "releases",
+    icon: <TruckOutlined />,
+    label: "Releases",
+  },
+  {
+    key: "issue",
+    icon: <FilterOutlined />,
+    label: "Issue and filters",
+  },
+  {
+    key: "pages",
+    icon: <FileTextOutlined />,
+    label: "Pages",
+  },
+  {
+    key: "report",
+    icon: <LineChartOutlined />,
+    label: "Report",
+  },
+  {
+    key: "component",
+    icon: <InboxOutlined />,
+    label: "Component",
+  },
 ];
-const onClick = (e) => {
-  console.log("click", e);
-};
-const MenuCyberBug = () => (
-  <div className="bg-white">
-    <div className="m-10">
-      <img src={logo} alt="" style={{ width: "120px" }} />
-    </div>
-    <Menu
-      onClick={onClick}
+
+const MenuCyberBug = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  return (
+    <div
+      width={200}
       style={{
-        width: 250,
+        background: colorBgContainer,
       }}
-      mode="vertical"
-      items={items}
-    />
-  </div>
-);
+    >
+      <div className="m-10">
+        <img src={logo} alt="" style={{ width: "120px" }} />
+      </div>
+      <Menu
+        mode="inline"
+        defaultSelectedKeys={["user"]}
+        defaultOpenKeys={["files"]}
+        style={{
+          height: "100%",
+          borderRight: 0,
+        }}
+        items={items}
+      />
+    </div>
+  );
+};
 export default MenuCyberBug;

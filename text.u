@@ -1,0 +1,11 @@
+** Chức năng xóa member vào project.
+1. User click bất cứ avatar nào trong column member
+2. Hiển thị modal show danh sách các user hiện có -> research modal https://ant.design/components/modal
+3. User tiến hành xóa người dùng khỏi danh sách trong modal.
+4. User call api edit, sẽ truyền danh sách đã xóa trong modal vào api.
+
+** Chức năng thêm member vào project.
+1. User click nút (+) nào trong column member
+2. Hiển thị modal thêm user gồm 1 select chứa tên user (api) và 1 nút ok -> research modal https://ant.design/components/modal
+3. User tiến hành thêm người dùng vào danh sách trong.
+4. User call api edit, sẽ truyền danh sách đã thêm trong modal vào api.

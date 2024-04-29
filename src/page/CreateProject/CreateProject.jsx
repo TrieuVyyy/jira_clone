@@ -14,15 +14,15 @@ export default function CreateProject() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSelect = (e) => {
+  const handleSelect = (name, value) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
   const handleCreate = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     https
       .post("/api/Project/createProjectAuthorize", formData)
       .then((res) => {
@@ -39,40 +39,37 @@ export default function CreateProject() {
     <div className="container pt-10">
       <h1 className="font-bold text-2xl ml-5 text-gray-500">Create Project</h1>
       <form className="container">
-        <div className="form-group p-2">
-          <label className="text-sm font-light">Name</label>
-          <input
-            style={{ width: "100%" }}
-            className="form-control"
-            name="projectName"
-            onChange={handleOnChange}
-          />
-        </div>
-        <div className="form-group p-2">
-          <label className="text-sm font-light">Description</label>
-          <CKEditor
-            editor={ClassicEditor}
-            data=""
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              setFormData({ ...formData, description: data });
-            }}
-          />
-        </div>
-        <div className="form-group p-2">
-          <label className="text-sm font-light">Project Category</label>
-          <CategoryProject onChange={handleSelect} name="projectCategoryName" />
+        <label className="text-sm font-light">Name</label>
+        <input
+          style={{ width: "100%" }}
+          className="form-control"
+          name="projectName"
+          onChange={handleOnChange}
+        />
 
-          <Button
-            className="bg-green-700 mt-3"
-            type="primary"
-            htmlType="submit"
-            style={{ color: "#fff" }}
-            onClick={handleCreate}
-          >
-            Submit
-          </Button>
-        </div>
+        <label className="text-sm font-light">Description</label>
+        <CKEditor
+          editor={ClassicEditor}
+          data=""
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            setFormData({ ...formData, description: data });
+          }}
+        />
+
+        <label className="text-sm font-light">Project Category</label>
+
+        <CategoryProject onSelect={handleSelect} name="categoryId" />
+
+        <Button
+          className="bg-green-700 mt-3"
+          type="primary"
+          htmlType="submit"
+          style={{ color: "#fff" }}
+          onClick={handleCreate}
+        >
+          Submit
+        </Button>
       </form>
     </div>
   );

@@ -5,7 +5,7 @@ const initialState = {
 };
 
 const spinnerSlice = createSlice({
-  name: "spinnerSlice",
+  name: "spinner",
   initialState,
   reducers: {
     setLoadingOn: (state, action) => {

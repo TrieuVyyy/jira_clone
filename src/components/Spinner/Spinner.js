@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RingLoader } from "react-spinners";
 
 export default function Spinner() {
-    let {isLoading} = useSelector((state) => state.spinnerSlice);
+  const  isLoading = useSelector(state => state.spinnerReducer);
   return isLoading ? (
     <div
       style={{

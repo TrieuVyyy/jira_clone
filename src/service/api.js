@@ -1,7 +1,7 @@
 // axios instance
 
 import axios from "axios";
-import { store } from "../index";
+import store from "../redux/config";
 import { setLoadingOff, setLoadingOn } from "../redux/spinnerSlice";
 
 const accessToken=JSON.parse(localStorage.getItem("USER_INFOR"))?.accessToken

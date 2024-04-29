@@ -1,20 +1,103 @@
-import React from "react";
-import SidebarCyberBugs from "../HomePage/SidebarCyberBugs";
-import { Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, Outlet } from "react-router-dom";
+import { Breadcrumb, Layout, Menu, theme } from "antd";
+import {
+  QuestionCircleOutlined,
+  SearchOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
+import { SiJirasoftware } from "react-icons/si";
+import { useSelector } from "react-redux";
 import MenuCyberBug from "../HomePage/MenuCyberBug";
+const { Content, Sider } = Layout;
+
+const items = [
+  {
+    key: "search",
+    icon: <SearchOutlined />,
+    label: <Link className="text-decoration-none">SEARCH TASK</Link>,
+  },
+  {
+    key: "create",
+    icon: <PlusCircleOutlined />,
+    label: <Link to="/creattask" className="text-decoration-none">CREATE TASK</Link>,
+  },
+  {
+    key: "showtimes",
+    icon: <QuestionCircleOutlined />,
+    label: "ABOUT",
+  },
+];
 
 export default function HomeTemplate() {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const [collapsed, setCollapsed] = useState(false);
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const navgigate = useNavigate();
+  const user = useSelector((state) => state.userSlice);
+
+  useEffect(() => {
+    if (user) {
+      navgigate("/login");
+    }
+  }, []);
+
   return (
-    <div className="jira">
-      <div className="float-left">
-        <SidebarCyberBugs />
-      </div>
-      <div className="float-start mr-5">
+    <Layout>
+      <Layout>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
+          <a href="/">
+            <SiJirasoftware size={"40px"} className="m-6 text-blue-600 block" />
+          </a>
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={["user"]}
+            defaultOpenKeys={["files"]}
+            style={{
+              height: "100%",
+              borderRight: 0,
+            }}
+            theme="dark"
+            items={items}
+          />
+        </Sider>
         <MenuCyberBug />
-      </div>
-      <div className="flow-root">
-        <Outlet />
-      </div>
-    </div>
+        <Layout
+          style={{
+            padding: "0 24px 24px",
+          }}
+        >
+          <Breadcrumb
+            style={{
+              margin: "16px 0",
+            }}
+          >
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+          <Content
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            <Outlet />
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 }

@@ -1,13 +1,12 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
-import { https } from "./api";
-import { message } from "antd";
-import CategoryProject from "../page/CreateProject/CategoryProject";
+import { https } from "../../service/api";
+import { message, Avatar } from "antd";
+import CategoryProject from "../CreateProject/CategoryProject";
 
 export default function MyPagination(props) {
-  const { data } = props;
+  const { reRender} = props;
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -32,6 +31,7 @@ export default function MyPagination(props) {
       .then((res) => {
         message.success("Deleted successful");
         setCurrentItems();
+        reRender();
       })
       .catch((err) => {
         message.error("Failed to delete project");
@@ -41,7 +41,13 @@ export default function MyPagination(props) {
   const handleEdit = (id) => {
     const projectToEdit = data.find((project) => project.id === id);
     if (projectToEdit) {
-      setEditedProject(projectToEdit);
+      setEditedProject({
+        id: projectToEdit.id,
+        projectName: projectToEdit.projectName,
+        creator: projectToEdit.creator.id,
+        description: projectToEdit.description,
+        categoryId: projectToEdit.categoryId,
+      });
       setIsEditOpen(true); // Open edit mode
       window.history.pushState({}, "", `?projectId=${id}`);
     } else {
@@ -54,10 +60,11 @@ export default function MyPagination(props) {
       console.error("Missing project ID for update");
       return;
     }
+    console.log("editedProject", editedProject);
     https
       .put(
         `/api/Project/updateProject?projectId=${editedProject.id}`,
-        JSON.stringify(editedProject)
+        editedProject
       )
       .then((res) => {
         console.log(res.data.content);
@@ -68,6 +75,7 @@ export default function MyPagination(props) {
           project.id === id ? editedProject : project
         );
         setCurrentItems(updatedData);
+        reRender();
       })
       .catch((err) => {
         console.log(err);
@@ -75,8 +83,8 @@ export default function MyPagination(props) {
       });
   };
 
-  const handleInputChange = (event, field) => {
-    setEditedProject({ ...editedProject, [field]: event.target.value });
+  const handleInputChange = (name, value) => {
+    setEditedProject({ ...editedProject, [name]: value });
   };
 
   return (
@@ -89,6 +97,7 @@ export default function MyPagination(props) {
               <th>Project Name</th>
               <th>Project Category</th>
               <th>Description</th>
+              <th>Members</th>
               <th>Creator</th>
               <th>Action</th>
             </tr>
@@ -102,22 +111,32 @@ export default function MyPagination(props) {
                     <input
                       type="text"
                       value={editedProject.projectName}
-                      onChange={(e) => handleInputChange(e, "projectName")}
+                      name="projectName"
+                      onChange={(e) =>
+                        handleInputChange(e.target.name, e.target.value)
+                      }
                     />
                   </td>
                   <td>
                     <CategoryProject
                       value={editedProject.categoryName}
-                      onChange={(e) => handleInputChange(e, "categoryName")}
+                      name="categoryName"
+                      onSelect={handleInputChange}
+                      defaultValue={editedProject.categoryId}
                     />
                   </td>
                   <td>
                     <input
                       type=""
                       value={editedProject.description}
-                      onChange={(e) => handleInputChange(e, "description")}
+                      name="description"
+                      onChange={(e) =>
+                        handleInputChange(e.target.name, e.target.value)
+                      }
                     />
                   </td>
+                  <td></td>
+
                   <td style={{ color: "gray" }}>
                     {project.creator && project.creator.name}
                   </td>
@@ -147,7 +166,17 @@ export default function MyPagination(props) {
                   <td style={{ color: "goldenrod" }} className="font-medium">
                     {project.categoryName}
                   </td>
-                  <td>{project.members && project.members.name}</td>
+                  <td>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: project.description }}
+                    />
+                  </td>
+                  <td>
+                    {project.members.map((item) => (
+                      <Avatar key={item.userId} src={item.avatar} />
+                    ))}
+                  </td>
+
                   <td className="badge text-bg-success text-uppercase text-wrap">
                     {project.creator && project.creator.name}
                   </td>

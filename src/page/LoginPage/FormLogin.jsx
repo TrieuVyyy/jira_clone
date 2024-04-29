@@ -22,9 +22,6 @@ const FormLogin = () => {
         navigate("/");
         // đẩy data lên redux
         dispatch(setUser(res.data.content));
-        // lưu data xuống localStorage để user load trang sẽ không mất data
-        let dataJson = JSON.stringify(res.data.content);
-        localStorage.setItem("USER_INFOR", dataJson);
         message.success("Login successfully");
       })
       .catch((err) => {
