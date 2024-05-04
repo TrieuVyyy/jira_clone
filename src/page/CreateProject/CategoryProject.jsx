@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { https } from "../../service/api";
 
 export default function CategoryProject(props) {
-
   const {onSelect, name, defaultValue} = props;
   const [categoryList, setCategoryList] = useState([]);
 

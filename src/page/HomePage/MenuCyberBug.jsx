@@ -2,7 +2,8 @@ import React from "react";
 import {
   PlusCircleOutlined,
   ProductOutlined,
-  TruckOutlined,
+  DatabaseOutlined,
+  ContainerOutlined,
   FilterOutlined,
   FileTextOutlined,
   LineChartOutlined,
@@ -20,18 +21,18 @@ const items = [
   },
   {
     key: "project",
-    icon: <PlusCircleOutlined />,
+    icon: <DatabaseOutlined />,
     label: <Link to="/project" className="text-decoration-none">Project Manager</Link>,
   },
   {
     key: "create",
     icon: <PlusCircleOutlined />,
-    label: <Link to="/create" className="text-decoration-none">Create Project</Link>,
+    label: <Link to="/createproject" className="text-decoration-none">Create Project</Link>,
   },
   {
-    key: "releases",
-    icon: <TruckOutlined />,
-    label: "Releases",
+    key: "user",
+    icon: <ContainerOutlined />,
+    label: <Link to='/usermanager' className="text-decoration-none">User Manager</Link>,
   },
   {
     key: "issue",

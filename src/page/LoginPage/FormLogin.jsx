@@ -19,7 +19,7 @@ const FormLogin = () => {
       .post("/api/Users/signin", values)
       .then((res) => {
         // chuyển hướng user về home sau khi đăng nhập thành công
-        navigate("/");
+        navigate("/project");
         // đẩy data lên redux
         dispatch(setUser(res.data.content));
         message.success("Login successfully");

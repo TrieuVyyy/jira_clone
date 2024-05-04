@@ -10,6 +10,7 @@ import Spinner from "./components/Spinner/Spinner";
 import ProjectManager from "./page/ProjectManager/ProjectManager";
 import ProjectDetail from "./page/ProjectDetail/ProjectDetail";
 import CreateTask from "./page/CreateTask/CreateTask";
+import UserManager from "./page/UserManager/UserManager";
 
 function App() {
   return (
@@ -17,14 +18,16 @@ function App() {
       <Spinner />
       <BrowserRouter>
         <Routes>
+
           <Route path="/signup" element={<SignupPage />}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<HomeTemplate />}>
             <Route index element={<CyberBugs />} />
-            <Route path="/create" element={<CreateProject />} />
+            <Route path="/createproject" element={<CreateProject />} />
             <Route path="/project" element={<ProjectManager />} />
             <Route path="/detail/:id" element={<ProjectDetail />} />
             <Route path="/creattask" element={<CreateTask />} />
+            <Route path="usermanager" element={<UserManager />}/>
           </Route>
         </Routes>
       </BrowserRouter>

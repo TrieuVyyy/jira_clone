@@ -51,7 +51,7 @@ export default function CreateProject() {
         <CKEditor
           editor={ClassicEditor}
           data=""
-          onChange={(event, editor) => {
+          onChange={(e, editor) => {
             const data = editor.getData();
             setFormData({ ...formData, description: data });
           }}

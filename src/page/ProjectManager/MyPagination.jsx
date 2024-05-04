@@ -6,7 +6,7 @@ import { message, Avatar } from "antd";
 import CategoryProject from "../CreateProject/CategoryProject";
 
 export default function MyPagination(props) {
-  const { reRender} = props;
+  const { data , reRender} = props;
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);

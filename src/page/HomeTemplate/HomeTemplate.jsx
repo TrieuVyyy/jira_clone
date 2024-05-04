@@ -9,6 +9,7 @@ import {
 import { SiJirasoftware } from "react-icons/si";
 import { useSelector } from "react-redux";
 import MenuCyberBug from "../HomePage/MenuCyberBug";
+import Header from "./Header";
 const { Content, Sider } = Layout;
 
 const items = [
@@ -20,7 +21,11 @@ const items = [
   {
     key: "create",
     icon: <PlusCircleOutlined />,
-    label: <Link to="/creattask" className="text-decoration-none">CREATE TASK</Link>,
+    label: (
+      <Link to="/creattask" className="text-decoration-none">
+        CREATE TASK
+      </Link>
+    ),
   },
   {
     key: "showtimes",
@@ -58,6 +63,8 @@ export default function HomeTemplate() {
           <a href="/">
             <SiJirasoftware size={"40px"} className="m-6 text-blue-600 block" />
           </a>
+          <div>
+
           <Menu
             mode="inline"
             defaultSelectedKeys={["user"]}
@@ -69,6 +76,7 @@ export default function HomeTemplate() {
             theme="dark"
             items={items}
           />
+          </div>
         </Sider>
         <MenuCyberBug />
         <Layout
@@ -76,15 +84,24 @@ export default function HomeTemplate() {
             padding: "0 24px 24px",
           }}
         >
+          <Header />
           <Breadcrumb
             style={{
               margin: "16px 0",
             }}
-          >
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
+            items={[
+              {
+                title: "Home",
+              },
+              {
+                title: "List",
+              },
+
+              {
+                title: "App",
+              },
+            ]}
+          />
           <Content
             style={{
               padding: 24,
@@ -94,6 +111,7 @@ export default function HomeTemplate() {
               borderRadius: borderRadiusLG,
             }}
           >
+            
             <Outlet />
           </Content>
         </Layout>
