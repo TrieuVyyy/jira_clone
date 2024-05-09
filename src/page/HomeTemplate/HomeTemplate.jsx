@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import {
   QuestionCircleOutlined,
   SearchOutlined,
@@ -22,15 +22,10 @@ const items = [
     key: "create",
     icon: <PlusCircleOutlined />,
     label: (
-      <Link to="/creattask" className="text-decoration-none">
+      <Link to="/createtask" className="text-decoration-none">
         CREATE TASK
       </Link>
     ),
-  },
-  {
-    key: "showtimes",
-    icon: <QuestionCircleOutlined />,
-    label: "ABOUT",
   },
 ];
 
@@ -64,18 +59,17 @@ export default function HomeTemplate() {
             <SiJirasoftware size={"40px"} className="m-6 text-blue-600 block" />
           </a>
           <div>
-
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["user"]}
-            defaultOpenKeys={["files"]}
-            style={{
-              height: "100%",
-              borderRight: 0,
-            }}
-            theme="dark"
-            items={items}
-          />
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["user"]}
+              defaultOpenKeys={["files"]}
+              style={{
+                height: "100%",
+                borderRight: 0,
+              }}
+              theme="dark"
+              items={items}
+            />
           </div>
         </Sider>
         <MenuCyberBug />
@@ -85,23 +79,7 @@ export default function HomeTemplate() {
           }}
         >
           <Header />
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-            items={[
-              {
-                title: "Home",
-              },
-              {
-                title: "List",
-              },
 
-              {
-                title: "App",
-              },
-            ]}
-          />
           <Content
             style={{
               padding: 24,
@@ -111,7 +89,6 @@ export default function HomeTemplate() {
               borderRadius: borderRadiusLG,
             }}
           >
-            
             <Outlet />
           </Content>
         </Layout>

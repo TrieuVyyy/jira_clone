@@ -3,12 +3,11 @@ import { https } from "../../service/api";
 import { Popover, Input, Button, List, Avatar, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
-export default function AddMember({ accessToken }) {
+export default function AddMember() {
   const [listUser, setListUser] = useState([]);
   const [search, setSearch] = useState("");
   const [showList, setShowList] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const fectchUserList = () => {
     if (showList) {
@@ -37,30 +36,14 @@ export default function AddMember({ accessToken }) {
     setShowList(!showList);
   };
 
-  const handleChange = (selectedUsers) => {
-    console.log("handleChange", selectedUsers);
-  };
-
   //add member
-  const handleAdd = (user) => {
-    const updatedUsers = [...selectedUsers, user];
-    setSelectedUsers(updatedUsers);
-    setShowList(false);
-  };
-
-  const handleAddMember = (projectId) => {
-    if (selectedUsers.length === 0) {
-      message.error("Select at least one user to add as a member.");
-      return;
-    }
-    const userIds = selectedUsers.map((user) => user.id);
+  const handleAddMember = (id) => {
     https
-      .post(`/api/Project/assignUserProject?project=${projectId}`, userIds)
+      .post(`/api/Project/assignUserProject?project=${id}`)
       .then((res) => {
-        message.success("Add member successful");
-        setSelectedUsers([]);
-        fectchUserList(selectedUsers);
         console.log(res.data);
+        message.success("Add member successful");
+        setShowList(false);
       })
       .catch((err) => {
         message.error("Add member faild");
@@ -85,9 +68,8 @@ export default function AddMember({ accessToken }) {
           renderItem={(user) => (
             <List.Item
               key={user.id}
-              onClick={() => handleAdd(user)}
+              onClick={() => handleAddMember(user)}
               style={{ cursor: "pointer" }}
-              onChange={handleChange}
             >
               <List.Item.Meta
                 avatar={<Avatar src={user.avatar} />}
@@ -97,11 +79,6 @@ export default function AddMember({ accessToken }) {
           )}
         />
       </div>
-      {selectedUsers.length > 0 && (
-        <button className="btn btn-primary btn-sm" onClick={handleAddMember}>
-          Add
-        </button>
-      )}
     </div>
   );
   return (
@@ -109,9 +86,7 @@ export default function AddMember({ accessToken }) {
       <Button className="bg-gray-200 text-gray-600 text-center" shape="circle">
         +
       </Button>
-      {selectedUsers.map((user) => (
-        <Avatar key={user.id} src={user.avatar} />
-      ))}
+      
     </Popover>
   );
 }

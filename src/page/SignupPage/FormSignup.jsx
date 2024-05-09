@@ -37,85 +37,81 @@ const FormSignup = () => {
   };
 
   return (
-    <div className="signup-page ml-20 pt-32">
-      <div className="signup-form-container">
-        <h1 className="title text-center pb-4 font-semibold font-mono">
-          Sign Up
-        </h1>
-        <Form
-          name="basic"
-          layout="vertical"
-          style={{
-            maxWidth: 1000,
-          }}
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <Form.Item
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: "Name is required!",
-              },
-            ]}
-          >
-            <Input prefix={<AiOutlineUsergroupAdd />} placeholder="Name" />
-          </Form.Item>
-
-          <Form.Item
-            name="phone"
-            rules={[
-              {
-                required: true,
-                message: "Phone Number is required!",
-              },
-            ]}
-          >
-            <Input prefix={<AiOutlinePhone />} placeholder="Phone Number" />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            rules={[
-              {
-                type: "email",
-                required: true,
-                message: "Email is required!",
-              },
-            ]}
-          >
-            <Input prefix={<AiOutlineMail />} placeholder="Email" />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Password is required!",
-              },
-            ]}
-          >
-            <Input.Password prefix={<AiFillLock />} placeholder="Password" />
-          </Form.Item>
-
-          <Form.Item
-            wrapperCol={{
-              offset: 0,
-              span: 16,
-            }}
-          >
-            <Button className="bg-orange-400" htmlType="submit">
-              Sign Up
-            </Button>
-          </Form.Item>
-          <a href="/login">Already have an account?</a>
-        </Form>
+    <div className="signup-form space-y-5">
+      <div className="flex justify-between items-center space-x-5">
+        <h2 className="title text-center font-semibold font-mono">Sign up</h2>
+        <a href="/login" className="no-underline text-xs font-mono ">
+          Already have an account?
+        </a>
       </div>
+      <Form
+        name="basic"
+        layout="vertical"
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <Form.Item
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Name is required!",
+            },
+          ]}
+        >
+          <Input prefix={<AiOutlineUsergroupAdd />} placeholder="Name" />
+        </Form.Item>
+
+        <Form.Item
+          name="phone"
+          rules={[
+            {
+              required: true,
+              message: "Phone Number is required!",
+            },
+          ]}
+        >
+          <Input prefix={<AiOutlinePhone />} placeholder="Phone Number" />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          rules={[
+            {
+              type: "email",
+              required: true,
+              message: "Email is required!",
+            },
+          ]}
+        >
+          <Input prefix={<AiOutlineMail />} placeholder="Email" />
+        </Form.Item>
+
+        <Form.Item
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: "Password is required!",
+            },
+          ]}
+        >
+          <Input.Password prefix={<AiFillLock />} placeholder="Password" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            className="bg-orange-400"
+            htmlType="submit"
+            style={{ width: "100%" }}
+          >
+            Sign Up
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

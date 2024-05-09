@@ -18,7 +18,7 @@ export default function TaskType() {
   return (
     <select name="tasktype" className="form-select">
       {taskList.map((task) => (
-        <option value="">{task.taskType}</option>
+        <option value={task.id}>{task.taskType}</option>
       ))}
     </select>
   );

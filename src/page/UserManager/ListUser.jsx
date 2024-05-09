@@ -16,7 +16,7 @@ export default function ListUser() {
       .then((res) => {
         console.log(res.data);
         setUserList(res.data.content);
-        message.success("Get data successfully");
+        // message.success("Get data successfully");
         setIsLoading(false);
       })
       .catch((err) => {
@@ -123,10 +123,9 @@ export default function ListUser() {
   };
 
   const handleEdit = (e, record) => {
-    const id = record.userId;
     if (record) {
       setEditedUser({
-        userId: id,
+        userId: record.userId,
         passWord: record.passWord,
         email: record.email,
         name: record.name,
@@ -144,13 +143,13 @@ export default function ListUser() {
     };
 
     //cập nhật project
-    const handleUpdate = (id) => {
+    const handleUpdate = (userId) => {
       const updatedUserList = userList.map((user) =>
-        user.userId === id ? editedUser : user
+        user.userId === userId ? editedUser : user
       );
       setUserList(updatedUserList);
       https
-        .put(`/api/Users/editUser${formData.id}`, formData)
+        .put(`/api/Users/editUser${formData.userId}`, formData)
         .then((res) => {
           message.success("Update successful");
           setIsEditing(false);
@@ -164,11 +163,11 @@ export default function ListUser() {
     };
 
     return (
-      <Drawer title="Edit Project" open={visible} onClose={onClose}>
+      <Drawer title="Edit User" open={visible} onClose={onClose}>
         <form className="space-y-3">
           <label className=" text-gray-700 text-sm font-bold">ID:</label>
           <input
-            readOnly
+            disabled
             className="shadow border rounded w-full py-1 px-2 text-red-500"
             type="text"
             name="userId"
@@ -196,7 +195,7 @@ export default function ListUser() {
           </label>
           <input
             className="shadow border rounded w-full py-1 px-2"
-            type="text"
+            type="number"
             name="phoneNumber"
             value={formData?.phoneNumber}
             onChange={handleChange}
@@ -244,16 +243,18 @@ export default function ListUser() {
           className="my-4"
           prefix={<SearchOutlined />}
           style={{ width: "300px", height: "40px" }}
-          placeholder="Search Member"
+          placeholder="Search Member..."
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
         />
-        <Link className="btn btn-success my-4">+ Add User</Link>
+        {/* <Link className="btn btn-success my-4">+ Add User</Link> */}
       </div>
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <Table columns={columns} dataSource={userList} />
+        <Table columns={columns} dataSource={userList} scroll={{
+          y: 400,
+        }}  />
       )}
       <EditUser visible={isEditing} initialValues={editedUser} />
     </div>

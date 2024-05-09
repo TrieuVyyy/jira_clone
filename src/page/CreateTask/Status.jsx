@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { https } from "../../service/api";
 
-
-export default function TaskStatus() {
+export default function Status() {
   const [status, setStatus] = useState([]);
 
   useEffect(() => {
@@ -16,9 +15,9 @@ export default function TaskStatus() {
       });
   }, []);
   return (
-    <select name="status" className="form-select">
+    <select name="priority" className="form-select">
       {status.map((item) => (
-        <option value="">{item.statusName}</option>
+        <option value={item.statusId}>{item.statusName}</option>
       ))}
     </select>
   );

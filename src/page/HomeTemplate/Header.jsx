@@ -10,16 +10,17 @@ export default function Header() {
     window.location.reload();
   };
   let renderMenu = () => {
-    let cssBtn = "rounded px-3 py-1 border-2 border-black";
+    let cssBtn =
+      "rounded px-3 py-1 border-2 border-black text-decoration-none text-gray-500";
     if (user) {
       // đã đăng nhập
       return (
         <>
-          <span className="text-white">
+          <span className="text-black">
             Hello <span className="uppercase">{user.name}</span> !
           </span>
           <button className={cssBtn} onClick={handleLogout}>
-            1 Logout
+            Logout
           </button>
         </>
       );
@@ -34,7 +35,7 @@ export default function Header() {
           >
             Login
           </button>
-          <NavLink to="/register" className={cssBtn}>
+          <NavLink to="/signup" className={cssBtn}>
             Sign up
           </NavLink>
         </>

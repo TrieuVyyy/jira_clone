@@ -3,7 +3,7 @@ import FormLogin from "./FormLogin";
 
 export default function LoginPage(props) {
   return (
-    <div className="container flex">
+    <div className="container flex justify-between items-center">
       <div className="w-2/3">
         <img
           alt=""

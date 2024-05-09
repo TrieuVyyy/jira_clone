@@ -18,7 +18,7 @@ export default function Priority() {
   return (
     <select name="priority" className="form-select">
       {priority.map((item) => (
-        <option value="">{item.priority}</option>
+        <option value={item.priorityId}>{item.priority}</option>
       ))}
     </select>
   );

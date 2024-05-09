@@ -25,8 +25,8 @@ function App() {
             <Route index element={<CyberBugs />} />
             <Route path="/createproject" element={<CreateProject />} />
             <Route path="/project" element={<ProjectManager />} />
-            <Route path="/detail/:id" element={<ProjectDetail />} />
-            <Route path="/creattask" element={<CreateTask />} />
+            <Route path="/project-detail/:id" element={<ProjectDetail />} />
+            <Route path="/createtask" element={<CreateTask />} />
             <Route path="usermanager" element={<UserManager />}/>
           </Route>
         </Routes>

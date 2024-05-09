@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Modal, Row, Form, Container } from "react-bootstrap";
+import { Button, Col, Row, Form, Container } from "react-bootstrap";
+import { Modal } from "antd";
 import {
   BsFillSendPlusFill,
   BsLink45Deg,
@@ -8,24 +9,24 @@ import {
 } from "react-icons/bs";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import TaskType from "./TaskType";
+import TaskType from "../CreateTask/TaskType";
 import { https } from "../../service/api";
-import TaskStatus from "./TaskStatus";
-import Assignees from "./Assignees";
+// import TaskStatus from "./TaskStatus";
+import Assignees from "../CreateTask/Assignees";
 import Comment from "./TaskComment/Comment";
-import Reporter from "./Reporter";
-import Priority from "./Priority";
-import ListComment from "./TaskComment/ListComment";  
+import Priority from "../CreateTask/Priority";
+import ListComment from "./TaskComment/ListComment";
 
 export default function TaskDetail(props) {
-  const { show, handleClose } = props;
-  const [formData, setFormData] = useState([]);
+  const { show, handleCancel } = props;
+  const [taskDetail, setTaskDetail] = useState([]);
+  const [formData, setFormData] = useState()
 
   useEffect(() => {
     https
-      .get("/api/Project/getTaskDetail")
+      .get(`/api/Project/getTaskDetail?taskId`)
       .then((res) => {
-        setFormData(res.data.content);
+        setTaskDetail(res.data.content);
       })
       .catch((err) => {
         console.log(err);
@@ -38,8 +39,8 @@ export default function TaskDetail(props) {
 
   return (
     <Modal
-      show={show}
-      onHide={handleClose}
+      open={show}
+      onCancel={handleCancel}
       aria-labelledby="contained-modal-title-vcenter"
       size="xl"
       centered
@@ -77,13 +78,11 @@ export default function TaskDetail(props) {
           <Col xs={7}>
             <div className="issue">
               <textarea
-              onChange={handleOnChange}
+                onChange={handleOnChange}
                 className="text-2xl font-medium"
                 placeholder="Short summary"
                 style={{ width: "100%", height: "78px" }}
-              >
-
-              </textarea>
+              ></textarea>
             </div>
             <div className="description">
               <p className="p-2 text-sm font-medium">Description</p>
@@ -119,7 +118,7 @@ export default function TaskDetail(props) {
           <Col>
             <div className="status">
               <p className="p-2 text-xs font-medium text-yellow-700">STATUS</p>
-              <TaskStatus />
+              {/* <Status /> */}
             </div>
             <div className="assignees pt-3">
               <p className="p-2 text-xs font-medium text-yellow-700">
@@ -131,7 +130,7 @@ export default function TaskDetail(props) {
               <p className="p-2 text-xs font-medium text-yellow-700">
                 REPORTER
               </p>
-             <Reporter />
+              {/* <Reporter /> */}
             </div>
             <div className="priotity pt-3">
               <p className="p-2 text-xs font-medium text-yellow-700">

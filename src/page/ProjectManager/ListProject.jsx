@@ -5,7 +5,6 @@ import {
   Space,
   Table,
   Avatar,
-  Tooltip,
   Button,
   Drawer,
   Popover,
@@ -29,7 +28,6 @@ export default function ListProject() {
       .get("/api/Project/getAllProject")
       .then((res) => {
         setProjectList(res.data.content);
-        message.success("Get data successfully");
         setIsLoading(false);
       })
       .catch((err) => {
@@ -55,7 +53,10 @@ export default function ListProject() {
       dataIndex: "projectName",
       key: "projectName",
       render: (text, record) => (
-        <Link to={`/detail/${record.id}`} className="text-decoration-none">
+        <Link
+          to={`/project-detail/${record.id}`}
+          className="text-decoration-none"
+        >
           {text}
         </Link>
       ),
@@ -81,74 +82,77 @@ export default function ListProject() {
       key: "members",
       render: (members) => (
         <div className="flex items-center">
-          {members.slice(0, 2).map((member) => (
-            <Popover
-              key={member.userId}
-              content={
-                <div
-                  style={{
-                    maxHeight: "200px",
-                    overflowY: "scroll",
-                    overflowX: "hidden",
-                  }}
-                >
-                  <Table
-                    size="small"
-                    pagination={false}
-                    dataSource={members}
-                    columns={[
-                      {
-                        title: "User ID",
-                        dataIndex: "userId",
-                        key: "userId",
+          <Popover
+            title="Members"
+            key={members.userId}
+            content={
+              <div
+                style={{
+                  maxHeight: "200px",
+                  overflowY: "scroll",
+                  overflowX: "hidden",
+                }}
+              >
+                <Table
+                  size="small"
+                  pagination={false}
+                  dataSource={members}
+                  columns={[
+                    {
+                      title: "User ID",
+                      dataIndex: "userId",
+                      key: "userId",
+                    },
+                    {
+                      title: "Avatar",
+                      key: "avatar",
+                      render: (_, member) => <Avatar src={member.avatar} />,
+                    },
+                    {
+                      title: "Name",
+                      dataIndex: "name",
+                      key: "name",
+                    },
+                    {
+                      title: "",
+                      key: "action",
+                      render: (_, record) => {
+                        return (
+                          <Popconfirm
+                            title="Delete the member"
+                            description="Are you sure to delete this member?"
+                            onConfirm={() => handleRemoveMember(record.id)}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+                            <Button danger size="small" shape="circle">
+                              X
+                            </Button>
+                          </Popconfirm>
+                        );
                       },
-                      {
-                        title: "Avatar",
-                        key: "avatar",
-                        render: (_, member) => <Avatar src={member.avatar} />,
-                      },
-                      {
-                        title: "Name",
-                        dataIndex: "name",
-                        key: "name",
-                      },
-                      {
-                        title: "",
-                        key: "action",
-                        render: (_, record) => {
-                          return (
-                            <Popconfirm
-                              title="Delete the member"
-                              description="Are you sure to delete this member?"
-                              onConfirm={() => handleRemoveMember(record.id)}
-                              okText="Yes"
-                              cancelText="No"
-                            >
-                              <Button danger size="small" shape="circle">
-                                X
-                              </Button>
-                            </Popconfirm>
-                          );
-                        },
-                      },
-                    ]}
-                  />
-                </div>
-              }
-              trigger="hover"
-            >
-              <Avatar src={member.avatar} />
-            </Popover>
-          ))}
-          {members.length > 2 && (
-            <Tooltip title="More members">
-              <Avatar className="bg-orange-200 text-gray-600">
-                +{members.length - 2}
-              </Avatar>
-            </Tooltip>
-          )}
-
-          <AddMember />
+                    },
+                  ]}
+                />
+              </div>
+            }
+            trigger="hover"
+          >
+            <div className="flex ">
+              <Avatar.Group
+                maxCount={2}
+                maxStyle={{
+                  color: "#f56a00",
+                  backgroundColor: "#fde3cf",
+                }}
+              >
+                {members.map((member, index) => (
+                  <Avatar key={index} src={member.avatar} />
+                ))}
+              </Avatar.Group>
+              <AddMember />
+            </div>
+          </Popover>
         </div>
       ),
     },
@@ -226,10 +230,10 @@ export default function ListProject() {
   };
 
   const handleEdit = (e, record) => {
-    const projectId = record.id;
+    // const projectId = record.id;
     if (record) {
       setEditedProject({
-        id: projectId,
+        id: record.id,
         projectName: record.projectName,
         creator: record.creator.id,
         description: record.description,
@@ -278,7 +282,7 @@ export default function ListProject() {
         <form className="space-y-3">
           <label className=" text-gray-700 text-sm font-bold">ID:</label>
           <input
-            readOnly
+            disabled
             className="shadow border rounded w-full py-1 px-2 text-red-500"
             type="text"
             name="id"
