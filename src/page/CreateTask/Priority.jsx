@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { https } from "../../service/api";
 
 
-export default function Priority() {
+export default function Priority(props) {
+  const {onSelect} = props
+
   const [priority, setPriority] = useState([]);
 
   useEffect(() => {
@@ -16,9 +18,9 @@ export default function Priority() {
       });
   }, []);
   return (
-    <select name="priority" className="form-select">
-      {priority.map((item) => (
-        <option value={item.priorityId}>{item.priority}</option>
+    <select name="priorityId" className="form-select" onChange={onSelect}>
+      {priority.map((item, ) => (
+        <option  value={item.priorityId}>{item.priority}</option>
       ))}
     </select>
   );

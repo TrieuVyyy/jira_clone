@@ -24,7 +24,7 @@ const FormSignup = () => {
         dispatch(setUser(res.data.content));
         //lưu data xuống localStorege để  user load trang sẽ ko bị mất data
         let dataJson = JSON.stringify(res.data.content);
-        localStorage.setItem("USER_INFOR", dataJson);
+        localStorage.setItem("USER_TOKEN", dataJson);
         message.success("Account created successfully!");
       })
       .catch((err) => {

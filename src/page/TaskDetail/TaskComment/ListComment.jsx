@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Image, Button, Form, FloatingLabel } from "react-bootstrap";
-import avt1 from "../../../assets/images/avt1.png";
+import { Avatar, Button } from "antd";
 import { https } from "../../../service/api";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-
-export default function ListComment() {
+export default function ListComment({ taskId }) {
   const [formData, setFormData] = useState([]);
   const [listComment, setListComment] = useState([]);
+  const [showButtons, setShowButtons] = useState(false);
 
   useEffect(() => {
     https
-      .get("/api/Comment/getAll")
+      .get(`/api/Comment/getAll?taskId=${taskId}`)
       .then((res) => {
+        console.log(res.data);
         setListComment(res.data.content);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [taskId]);
 
   const handleOnChange = (e) => {
-    setListComment({ ...listComment, [e.target.comment]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setShowButtons(true);
+  };
+
+  const handleCancel = () => {
+    setFormData({ comment: "" });
+    setShowButtons(false);
   };
 
   const handleAdd = () => {
@@ -28,7 +36,7 @@ export default function ListComment() {
       .post("/api/Comment/insertComment", formData)
       .then((res) => {
         console.log(res.data.content);
-        setFormData(res.data.content);
+        // setFormData(res.data.content);
       })
       .catch((err) => {
         console.log(err);
@@ -36,66 +44,41 @@ export default function ListComment() {
   };
 
   return (
-    <div className="container">
-      <div className="input-cmt p-2 d-flex">
-        <Image src={avt1} style={{ width: "36px" }} roundedCircle />
-        <FloatingLabel
-          style={{ height: "36px", width: "100%" }}
-          controlId="floatingTextarea"
-          label="Add a comment...   "
-          className="ml-3"
-        >
-          <Form.Control
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              setFormData({ ...formData, comment: data });
-            }}
-            as="textarea"
-            placeholder="Leave a comment here"
-          />
-        </FloatingLabel>
+    <>
+      <div className="input-cmt flex space-x-3">
+        <Avatar />
+        <input
+          type="text"
+          style={{ width: "100%" }}
+          className="form-control"
+          name="comment"
+          value={formData.comment}
+          onChange={handleOnChange}
+          placeholder="Add a comment..."
+          onFocus={() => setShowButtons(true)}
+          onBlur={() => setShowButtons(false)}
+        />
       </div>
-      <div className="protip d-flex pt-4 ml-14">
-        <strong className="text-xs ml-1">Pro tip:</strong>
-        <p className="text-xs ml-1">press</p>
-        <span className="text-xs font-extrabold ml-1">M</span>
-        <p className="text-xs ml-1">to comment</p>
-      </div>
-      <div className="ml-14">
-        <Button
-          onClick={handleAdd}
-          className="bg-blue-500 mr-3"
-          variant="primary"
-          size="sm"
-        >
-          Add
-        </Button>
-      </div>
-
-      <div className="p-2 d-flex">
-        <Image src={avt1} style={{ width: "36px" }} roundedCircle />
-        <div className="d-flex ml-4">
-          <span className="mr-2">Lord Gaben</span>
-          {listComment.map((item) => (
-            <p className="text-xs font-thin p-1">{item.dateTime}</p>
-          ))}
+      {showButtons && (
+        <div className="flex ml-10 pt-2 space-x-5">
+          <Button type="primary" className="bg-blue-600" size="small" onClick={handleAdd}>
+            Save
+          </Button>
+          <Button size="small" onClick={handleCancel}>
+            Cancel
+          </Button>
         </div>
-      </div>
-      <div className="ml-14">
-        {listComment.map((item) => (
-          <input style={{ width: "100%" }} type="text">
-            {item.content}
-          </input>
-        ))}
-      </div>
-      <div className="d-flex ml-14">
-        <Button variant="outline-secondary" size="sm" className="mr-3">
-          Edit
-        </Button>
-        <Button variant="outline-secondary" size="sm">
-          Delete
-        </Button>
-      </div>
-    </div>
+      )}
+      {showButtons ? null : (
+        <div className="protip flex ml-10">
+          <strong className="text-xs ml-1">Pro tip:</strong>
+          <p className="text-xs ml-1">press</p>
+          <span className="text-xs font-extrabold ml-1">M</span>
+          <p className="text-xs ml-1">to comment</p>
+        </div>
+      )}
+
+      
+    </>
   );
 }

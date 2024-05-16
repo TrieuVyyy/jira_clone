@@ -3,15 +3,15 @@ import { https } from "../../service/api";
 import { Popover, Input, Button, List, Avatar, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
-export default function AddMember() {
+export default function AddMember(props) {
+  const { projectId, refreshProjectList } = props;
   const [listUser, setListUser] = useState([]);
   const [search, setSearch] = useState("");
   const [showList, setShowList] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const fectchUserList = () => {
     if (showList) {
-      setLoading(true);
+
       https
         .get("/api/Users/getUser")
         .then((res) => {
@@ -28,7 +28,6 @@ export default function AddMember() {
   };
 
   useEffect(() => {
-    setLoading(true);
     fectchUserList();
   }, [showList, search]);
 
@@ -38,12 +37,17 @@ export default function AddMember() {
 
   //add member
   const handleAddMember = (id) => {
+    const member = {
+      projectId: projectId,
+      userId: id,
+    };
     https
-      .post(`/api/Project/assignUserProject?project=${id}`)
+      .post("/api/Project/assignUserProject?project", member)
       .then((res) => {
         console.log(res.data);
         message.success("Add member successful");
         setShowList(false);
+        refreshProjectList();
       })
       .catch((err) => {
         message.error("Add member faild");
@@ -67,8 +71,8 @@ export default function AddMember() {
           dataSource={listUser}
           renderItem={(user) => (
             <List.Item
-              key={user.id}
-              onClick={() => handleAddMember(user)}
+              key={user.userId}
+              onClick={() => handleAddMember(user.userId)}
               style={{ cursor: "pointer" }}
             >
               <List.Item.Meta
@@ -86,7 +90,6 @@ export default function AddMember() {
       <Button className="bg-gray-200 text-gray-600 text-center" shape="circle">
         +
       </Button>
-      
     </Popover>
   );
 }

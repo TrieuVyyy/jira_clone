@@ -6,7 +6,6 @@ import { SearchOutlined } from "@ant-design/icons";
 
 export default function ListUser() {
   const [userList, setUserList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [editedUser, setEditedUser] = useState([]);
 
@@ -14,19 +13,14 @@ export default function ListUser() {
     https
       .get("/api/Users/getUser")
       .then((res) => {
-        console.log(res.data);
         setUserList(res.data.content);
-        // message.success("Get data successfully");
-        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    setIsLoading(true);
     fetchUserList();
   }, []);
 
@@ -72,7 +66,7 @@ export default function ListUser() {
             <Popconfirm
               title="Delete the user"
               description="Are you sure to delete this user?"
-              onConfirm={() => handleDeleteUser(record.id)}
+              onConfirm={() => handleDeleteUser(record.userId)}
               okText="Yes"
               cancelText="No"
             >
@@ -143,18 +137,20 @@ export default function ListUser() {
     };
 
     //cập nhật project
-    const handleUpdate = (userId) => {
-      const updatedUserList = userList.map((user) =>
-        user.userId === userId ? editedUser : user
-      );
-      setUserList(updatedUserList);
+    const handleUpdate = () => {
+      //lấy tất cả các field trong formData trừ userId
+      const { userId, ...rest } = formData;
+      const user = {
+        id: `${formData.userId}`,
+        ...rest,
+      };
+
       https
-        .put(`/api/Users/editUser${formData.userId}`, formData)
+        .put(`/api/Users/editUser`, user)
         .then((res) => {
           message.success("Update successful");
           setIsEditing(false);
           fetchUserList();
-          console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -209,12 +205,7 @@ export default function ListUser() {
             onChange={handleChange}
           />
 
-          <Button
-            className="bg-blue-700"
-            type="primary"
-            htmlType="submit"
-            onClick={handleUpdate}
-          >
+          <Button className="bg-blue-700" type="primary" onClick={handleUpdate}>
             Save
           </Button>
         </form>
@@ -227,7 +218,7 @@ export default function ListUser() {
     https
       .delete(`/api/Users/deleteUser?id=${userId}`)
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         message.success("Delete successful");
         fetchUserList();
       })
@@ -247,15 +238,16 @@ export default function ListUser() {
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
         />
-        {/* <Link className="btn btn-success my-4">+ Add User</Link> */}
       </div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <Table columns={columns} dataSource={userList} scroll={{
+
+      <Table
+        columns={columns}
+        dataSource={userList}
+        scroll={{
           y: 400,
-        }}  />
-      )}
+        }}
+      />
+
       <EditUser visible={isEditing} initialValues={editedUser} />
     </div>
   );

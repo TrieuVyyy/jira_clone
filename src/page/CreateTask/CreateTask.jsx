@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { Button, message, Select } from "antd";
+import { useSelector } from "react-redux";
 import TaskType from "./TaskType";
 import Assignees from "./Assignees";
 import Priority from "./Priority";
@@ -14,51 +15,60 @@ export default function CreateTask() {
   const navigate = useNavigate();
   const [projectList, setProjectList] = useState([]);
   const [formData, setFormData] = useState([]);
-  const [user, setUser] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState();
+  const user = useSelector((state) => state.userSlice.user);
 
   useEffect(() => {
     https
       .get("/api/Project/getAllProject")
       .then((res) => {
-        setProjectList(res.data.content);
+        const myProject = res.data.content.filter(
+          (item) => item.creator.id == user.id
+        );
+        setProjectList(myProject);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  const onChange = (value) => {
-    // console.log(`selected ${value}`);
+  const onSelectProject = (value) => {
+    setFormData({ ...formData, projectId: value });
+    setSelectedProjectId(value);
   };
-  const onSearch = (value) => {
-    // console.log("search:", value);
+
+  const onSelectAssignees = (user) => {
+    setFormData({ ...formData, listUserAsign: user });
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const isNumber =
+      e.target.name === "originalEstimate" ||
+      e.target.name === "timeTrackingSpent" ||
+      e.target.name === "timeTrackingRemaining" ||
+      e.target.name === "priorityId" ||
+      e.target.name === "typeId";
+
+    const value = isNumber ? parseInt(e.target.value) : e.target.value;
+
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   //tạo task mới
-  const handleCrate = (e) => {
-    e.preventDefault();
-    // if (!user) {
-    //   message.error("You are not authorized to create tasks");
-    //   return;
-    // }
-
-    const isDuplicate = projectList.some(
-      (project) => project.projectName === formData.projectName
-    );
-    if (isDuplicate) {
-      message.error("Task name already exists");
-      return;
-    }
+  const handleCreate = () => {
+    const defaultCheckedName = ["priorityId", "typeId", "statusId"];
+    defaultCheckedName.forEach((e) => {
+      if (!formData.hasOwnProperty(e)) {
+        formData[e] = 1;
+      }
+    });
     https
       .post("/api/Project/createTask", formData)
       .then((res) => {
-        navigate("/");
+        const projectId = formData.projectId;
         setFormData(res.data.content);
         message.success("Create new task successfully");
+        navigate(`/project-detail/${projectId}`);
       })
       .catch((err) => {
         message.error("Failed to create task");
@@ -69,7 +79,7 @@ export default function CreateTask() {
     <div className="container">
       <h1 className="font-bold text-2xl text-gray-500">Create Task</h1>
       <form className="space-y-2">
-        <label className="text-sm font-sans pt-3">Project</label>
+        <label className="text-sm font-medium pt-3">Project</label>
         <Select
           showSearch
           optionFilterProp="children"
@@ -78,8 +88,7 @@ export default function CreateTask() {
           }
           style={{ width: "100%" }}
           placeholder="Search Project..."
-          onChange={onChange}
-          onSearch={onSearch}
+          onChange={onSelectProject}
         >
           {projectList.map((project) => (
             <Select.Option key={project.id} value={project.id}>
@@ -88,29 +97,33 @@ export default function CreateTask() {
           ))}
         </Select>
 
-        <label className="text-sm font-sans pt-2">Task Name</label>
+        <label className="text-sm font-medium pt-2">Task Name</label>
         <input
           style={{ width: "100%" }}
           className="form-control"
-          name="projectName"
+          name="taskName"
           onChange={handleChange}
         />
 
-        <label className="text-sm font-sans pt-2">Status</label>
-        <Status onChange={handleChange} />
+        <label className="text-sm font-medium pt-2">Status</label>
+        <Status onSelect={handleChange} />
 
         <div className="flex space-x-12 pt-2">
           <div className="form-left w-full space-y-2">
-            <label className="text-sm font-sans pt-2">Priority</label>
-            <Priority onChange={handleChange} />
+            <label className="text-sm font-medium pt-2">Priority</label>
+            <Priority onSelect={handleChange} />
 
-            <label className="text-sm font-sans pt-2">Assignees</label>
-            <Assignees onChange={handleChange} />
+            <label className="text-sm font-medium pt-2">Assignees</label>
+            <Assignees
+              onSelect={onSelectAssignees}
+              projectId={selectedProjectId}
+            />
 
-            <label className="text-sm font-sans pt-2">
+            <label className="text-sm font-medium pt-2">
               Original Estimate
             </label>
             <input
+              name="originalEstimate"
               type="number"
               min="0"
               style={{ width: "100%" }}
@@ -120,34 +133,32 @@ export default function CreateTask() {
           </div>
 
           <div className="form-right w-full space-y-2">
-            <label className="text-sm font-sans pt-2">Task Type</label>
-            <TaskType onChange={handleChange} />
+            <label className="text-sm font-medium pt-2">Task Type</label>
+            <TaskType onSelect={handleChange} />
 
-            <label className="text-sm font-sans pt-2">Time Tracking</label>
-            <TimeTracking />
+            <label className="text-sm font-medium pt-2">Time Tracking</label>
+            <TimeTracking onChange={handleChange} />
           </div>
         </div>
 
-     
-          <label className="text-sm font-sans pt-2">Description</label>
-          <CKEditor
-            editor={ClassicEditor}
-            data=""
-            onReady={(editor) => {}}
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              setFormData({ ...formData, description: data });
-            }}
-            onBlur={(event, editor) => {}}
-            onFocus={(event, editor) => {}}
-          />
+        <label className="text-sm font-medium pt-2">Description</label>
+        <CKEditor
+          editor={ClassicEditor}
+          data=""
+          onReady={(editor) => {}}
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            setFormData({ ...formData, description: data });
+          }}
+          onBlur={(event, editor) => {}}
+          onFocus={(event, editor) => {}}
+        />
 
         <Button
           className="bg-green-700 mt-3"
           type="primary"
-          htmlType="submit"
           style={{ color: "#fff" }}
-          onClick={handleCrate}
+          onClick={handleCreate}
         >
           Submit
         </Button>

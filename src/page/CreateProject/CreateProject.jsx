@@ -38,7 +38,7 @@ export default function CreateProject() {
     <div className="container">
       <h1 className="font-bold text-2xl text-gray-500">Create Project</h1>
       <form className="space-y-2">
-        <label className="text-sm font-sans pt-6">Name</label>
+        <label className="text-sm font-medium pt-6">Name</label>
         <input
           style={{ width: "100%" }}
           className="form-control"
@@ -46,7 +46,7 @@ export default function CreateProject() {
           onChange={handleOnChange}
         />
 
-        <label className="text-sm font-sans pt-6">Description</label>
+        <label className="text-sm font-medium pt-6">Description</label>
         <CKEditor
           editor={ClassicEditor}
           data=""
@@ -56,7 +56,7 @@ export default function CreateProject() {
           }}
         />
 
-        <label className="text-sm font-sans pt-6">Project Category</label>
+        <label className="text-sm font-medium pt-6">Project Category</label>
         <CategoryProject onSelect={handleSelect} name="categoryId" />
 
         <Button

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { https } from "../../service/api";
 
-
-export default function TaskType() {
+export default function TaskType(props) {
+  const { onSelect , defaultValue} = props;
   const [taskList, setTaskList] = useState([]);
 
   useEffect(() => {
@@ -16,9 +16,15 @@ export default function TaskType() {
       });
   }, []);
   return (
-    <select name="tasktype" className="form-select">
+    <select name="typeId" className="form-select" onChange={onSelect} style={{ width: "150px" }}>
       {taskList.map((task) => (
-        <option value={task.id}>{task.taskType}</option>
+        <option
+          value={task.id}
+          key={task.id}
+          selected={task.id === defaultValue}
+        >
+          {task.taskType}
+        </option>
       ))}
     </select>
   );

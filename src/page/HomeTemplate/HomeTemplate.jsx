@@ -39,13 +39,13 @@ export default function HomeTemplate() {
   };
 
   const navgigate = useNavigate();
-  const user = useSelector((state) => state.userSlice);
+  const user = useSelector((state) => state.userSlice.user);
 
   useEffect(() => {
-    if (user) {
+    if (!user) {
       navgigate("/login");
     }
-  }, []);
+  }, [user]);
 
   return (
     <Layout>

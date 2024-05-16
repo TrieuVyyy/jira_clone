@@ -1,40 +1,105 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Form, Container } from "react-bootstrap";
-import { Modal } from "antd";
-import {
-  BsFillSendPlusFill,
-  BsLink45Deg,
-  BsFillTrash3Fill,
-  BsAlarmFill,
-} from "react-icons/bs";
+import { Avatar, Button, Modal, Tag, message, Select } from "antd";
+import { SendOutlined, LinkOutlined, DeleteOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import TaskType from "../CreateTask/TaskType";
 import { https } from "../../service/api";
-// import TaskStatus from "./TaskStatus";
-import Assignees from "../CreateTask/Assignees";
-import Comment from "./TaskComment/Comment";
-import Priority from "../CreateTask/Priority";
+import TaskType from "../CreateTask/TaskType";
 import ListComment from "./TaskComment/ListComment";
+import Status from "../CreateTask/Status";
+import Priority from "../CreateTask/Priority";
+import TimeTracking from "../CreateTask/TimeTracking";
+import Assignees from "../CreateTask/Assignees";
 
 export default function TaskDetail(props) {
-  const { show, handleCancel } = props;
+  const { value, show, handleCancel, refreshProjectDetail } = props;
   const [taskDetail, setTaskDetail] = useState([]);
-  const [formData, setFormData] = useState()
+  const [formData, setFormData] = useState();
+  const [showCKE, setShowCKE] = useState(false);
+  const [showAssignees, setShowAssignees] = useState(false);
 
-  useEffect(() => {
+  const fetchTaskDetail = () => {
     https
-      .get(`/api/Project/getTaskDetail?taskId`)
+      .get(`/api/Project/getTaskDetail?taskId=${value}`)
       .then((res) => {
+        console.log(res.data);
         setTaskDetail(res.data.content);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchTaskDetail();
+  }, [value]);
 
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.issue]: e.target.value });
+  };
+
+  const handleSelect = (name, value) => {
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleClose = () => {
+    setFormData();
+    setShowCKE(false);
+  };
+
+  //xóa task
+  const handelDeleteTask = () => {
+    https
+      .delete(`/api/Project/removeTask?taskId=${value}`)
+      .then((res) => {
+        message.success("Delete successful");
+        handleCancel();
+        refreshProjectDetail();
+      })
+      .catch((err) => {
+        message.error("Delete failed");
+      });
+  };
+
+  //xóa user khỏi task
+  const handleRemoveUser = (userId) => {
+    const user = {
+      taskId: taskDetail.taskId,
+      userId,
+    };
+    https
+      .post(`/api/Project/removeUserFromTask?taskId`, user)
+      .then((res) => {
+        message.success("User removed successfully");
+        fetchTaskDetail();
+      })
+      .catch((err) => {
+        message.error("Failed to remove user");
+      });
+  };
+
+  const toggleAssignees = () => {
+    setShowAssignees(!showAssignees);
+  };
+
+  //thêm user trong task
+  const handleAssignUserTask = (userId, taskId) => {
+    const user = {
+      taskId,
+      userId,
+    };
+    https
+      .post(`/api/Project/assignUserTask?taskUser`, user)
+      .then((res) => {
+        console.log(res.data);
+        fetchTaskDetail();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -42,130 +107,146 @@ export default function TaskDetail(props) {
       open={show}
       onCancel={handleCancel}
       aria-labelledby="contained-modal-title-vcenter"
-      size="xl"
       centered
+      style={{ minWidth: "1000px" }}
     >
-      <Modal.Header>
-        <Container>
-          <Row>
-            <Col xs={7}>
-              <div className="task-title">
-                <TaskType />
-              </div>
-            </Col>
-            <Col>
-              <div className="d-flex">
-                <button className="p-2 mr-1 d-flex">
-                  <BsFillSendPlusFill size={"20px"} />
-                  <span className="ml-1">Give feedback</span>
-                </button>
-                <button className="p-2 mr-1 d-flex">
-                  <BsLink45Deg size={"22px"} />
+      <div className="flex justify-between space-x-5">
+        <div className="form-left">
+          <div className="flex items-center pb-2 space-x-3">
+            <TaskType
+              value={taskDetail?.taskTypeDetail?.id}
+              name="taskTypeDetail"
+              onSelect={handleSelect}
+              defaultValue={taskDetail?.taskTypeDetail?.id}
+            />
+            <span>{taskDetail?.taskName}</span>
+          </div>
 
-                  <span className="ml-1">Copy link</span>
-                </button>
-                <button className="p-2 ml-5">
-                  <BsFillTrash3Fill size={"20px"} />
-                </button>
-                <button className="btn-close" data-dismiss="modal"></button>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </Modal.Header>
-      <Modal.Body className="grid-example">
-        <Row>
-          <Col xs={7}>
-            <div className="issue">
-              <textarea
-                onChange={handleOnChange}
-                className="text-2xl font-medium"
-                placeholder="Short summary"
-                style={{ width: "100%", height: "78px" }}
-              ></textarea>
-            </div>
-            <div className="description">
-              <p className="p-2 text-sm font-medium">Description</p>
-              <CKEditor
-                editor={ClassicEditor}
-                data=""
-                onReady={(editor) => {}}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setFormData({ ...formData, description: data });
-                }}
-                onBlur={(event, editor) => {}}
-                onFocus={(event, editor) => {}}
-              />
-              <div className="btn d-flex">
-                <Button
-                  className="bg-blue-500 mr-3"
-                  variant="primary"
-                  size="sm"
-                >
-                  Save
-                </Button>
-                <Button className="bg-slate-500" variant="secondary" size="sm">
-                  Cancel
-                </Button>
-              </div>
-            </div>
-            <div className="comment pb-5 pt-3">
-              <p className="p-2 pt-4 text-sm font-medium">Comments</p>
-              <ListComment />
-            </div>
-          </Col>
-          <Col>
-            <div className="status">
-              <p className="p-2 text-xs font-medium text-yellow-700">STATUS</p>
-              {/* <Status /> */}
-            </div>
-            <div className="assignees pt-3">
-              <p className="p-2 text-xs font-medium text-yellow-700">
-                ASSIGNEES
-              </p>
-              <Assignees />
-            </div>
-            <div className="reporter pt-3">
-              <p className="p-2 text-xs font-medium text-yellow-700">
-                REPORTER
-              </p>
-              {/* <Reporter /> */}
-            </div>
-            <div className="priotity pt-3">
-              <p className="p-2 text-xs font-medium text-yellow-700">
-                PRIORITY
-              </p>
-              <Priority />
-            </div>
-            <div className="hours pt-3">
-              <p className="p-2 text-xs font-medium text-yellow-700">
-                ORIGINAL ESTIMATE (HOURS)
-              </p>
-              <Form.Control />
-            </div>
-            <div className="time pt-3">
-              <p className="p-2 text-xs font-medium text-yellow-700">
-                TIME TRACKING
-              </p>
-              <div className="d-flex ml-3">
-                <BsAlarmFill />
-                <div className="progress ml-2 w-full" style={{ height: 10 }}>
-                  <div
-                    className="progress-bar progress-bar-triped progress-bar-animated"
-                    role="progressbar"
-                    style={{ width: "50%" }}
-                  ></div>
+          <div className="py-2">
+            <textarea
+              className="text-xl font-semibold"
+              style={{ width: "100%" }}
+            >
+              This is an issue of Type:
+            </textarea>
+          </div>
+
+          <label className="text-sm font-medium pb-3">Description</label>
+          <div>
+            {showCKE ? (
+              <>
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={taskDetail?.description}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setTaskDetail({ ...taskDetail, description: data });
+                    setFormData({ ...formData, description: data });
+                  }}
+                />
+                <div className="flex space-x-5 pt-2">
+                  <Button type="primary" className="bg-blue-600" size="small">
+                    Save
+                  </Button>
+                  <Button size="small" onClick={handleClose}>
+                    Cancel
+                  </Button>
                 </div>
-              </div>
-              <div className="d-flex ml-9">
-                <span className="text-xs mr-60">No time logged</span>
-                <span className="text-xs">1h estimated</span>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </Modal.Body>
+              </>
+            ) : (
+              <textarea
+                onFocus={() => setShowCKE(true)}
+                onBlur={() => setShowCKE(false)}
+                value={taskDetail?.description}
+                name="description"
+                onChange={handleOnChange}
+                placeholder="Add a description..."
+                style={{ width: "100%" }}
+              />
+            )}
+          </div>
+
+          <label className="text-sm font-medium py-3">Comments</label>
+          <ListComment taskId={taskDetail?.taskId} />
+        </div>
+        <div className="form-right mr-8">
+          <div className="flex justify-start space-x-2">
+            <button className="px-2 py-1 rounded hover:bg-gray-200">
+              <SendOutlined />
+              Give feedback
+            </button>
+            <button className="px-2 py-1 rounded hover:bg-gray-200">
+              <LinkOutlined /> Copy link
+            </button>
+            <button
+              onClick={handelDeleteTask}
+              className="px-2 py-1 rounded hover:bg-gray-200"
+            >
+              <DeleteOutlined />
+            </button>
+          </div>
+          <label className="text-sm font-medium py-3">STATUS</label>
+          <Status
+            value={taskDetail?.statusId}
+            name="statusId"
+            onSelect={handleSelect}
+            defaultValue={taskDetail?.statusId}
+          />
+
+          <label className="text-sm font-medium py-3">ASSIGNESS</label>
+          <div>
+            {taskDetail?.assigness?.map((user, index) => (
+              <Tag key={index} className="px-2 py-1 space-x-2">
+                <Avatar size="small" src={user.avatar} />
+                {user.name}
+                <button
+                  onClick={() => handleRemoveUser(user.id)}
+                  className="text-gray-600"
+                >
+                  X
+                </button>
+              </Tag>
+            ))}
+            {showAssignees && (
+              <Assignees
+                projectId={taskDetail?.projectId}
+                onSelect={handleAssignUserTask}
+              />
+            )}
+
+            <button className="text-blue-600 pt-2" onClick={toggleAssignees}>
+              {showAssignees ? "Close" : "+ Add more"}
+            </button>
+          </div>
+
+          <label className="text-sm font-medium py-3">PRIORITY</label>
+          <Priority
+            value={taskDetail?.priorityTask?.priorityId}
+            name="taskTypeDetail"
+            onSelect={handleSelect}
+            defaultValue={taskDetail?.priorityTask?.priorityId}
+          />
+
+          <label className="text-sm font-medium py-3">
+            ORIGINAL ESTIMATE (HOURS)
+          </label>
+          <input
+            value={taskDetail?.originalEstimate}
+            name="originalEstimate"
+            type="number"
+            min="0"
+            style={{ width: "100%" }}
+            className="form-control"
+            onChange={handleOnChange}
+          />
+
+          <label className="text-sm font-medium py-3">TIME TRACKING</label>
+          <TimeTracking
+            value={taskDetail?.timeTrackingSpent}
+            onChange={handleOnChange}
+          />
+        </div>
+      </div>
     </Modal>
   );
 }

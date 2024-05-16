@@ -1,13 +1,12 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
-
+import { logOut } from "../../redux/userSlice";
 export default function Header() {
-  const user = useSelector((state) => state.userSlice);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userSlice.user);
   let handleLogout = () => {
-    //xoá localStorage
-    localStorage.removeItem("USER_INFOR");
-    window.location.reload();
+    dispatch(logOut());
   };
   let renderMenu = () => {
     let cssBtn =

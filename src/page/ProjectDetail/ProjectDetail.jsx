@@ -8,37 +8,33 @@ import TaskDetail from "../TaskDetail/TaskDetail";
 export default function ProjectDetail() {
   const [detail, setDetail] = useState();
   const [modalShow, setModalShow] = useState(false);
-  const [taskList, setTaskList] = useState([]);
+  const [showingTaskId, setShowingTaskId] = useState(null);
 
   let { id } = useParams();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
+  const handleModalOpen = (taskId) => {
+    setModalShow(true);
+    setShowingTaskId(taskId);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  useEffect(() => {
+  const fetchProjectDetail = () => {
     https
       .get(`/api/Project/getProjectDetail?id=${id}`)
       .then((res) => {
-        console.log(res);
         setDetail(res.data.content);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  };
 
+  useEffect(() => {
+    fetchProjectDetail();
+  }, [id]);
   const handleClose = () => {
     setModalShow(false);
   };
-  const handleShow = () => {
-    setModalShow(true);
-  };
+
   return (
     <div className="detail-page">
       <div className="header">
@@ -92,7 +88,7 @@ export default function ProjectDetail() {
           </Button>
         </div>
       </div>
-      <div className="cardTask grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="cardTask grid grid-cols-2 lg:grid-cols-4 gap-2">
         {detail?.lstTask?.map((task, index) => (
           <Card
             key={index}
@@ -103,18 +99,50 @@ export default function ProjectDetail() {
               backgroundColor: "gainsboro",
             }}
           >
-            <List style={{ cursor: "pointer", background: "white" }}>
-              <List.Item actions onClick={showModal}>
-                <TaskDetail
-                  value={task.taskId}
-                  show={isModalOpen}
-                  onHide={handleClose}
-                />
-              </List.Item>
+            <List
+              style={{
+                cursor: "pointer",
+                background: "white",
+              }}
+              className="space-y-5"
+            >
+              {task.lstTaskDeTail.map((taskDetail) => (
+                <List.Item
+                  key={taskDetail.taskId}
+                  actions
+                  onClick={() => handleModalOpen(taskDetail.taskId)}
+                  className="flex flex-col space-y-4 shadow-md hover:shadow-xl"
+                >
+                  <span>{taskDetail.taskName}</span>
+                  <div className="flex justify-between items-center space-x-9">
+                    <span className="text-red-600 text-xs">
+                      {taskDetail.priorityTask.priority}
+                    </span>
+                    <Avatar.Group
+                    size="small"
+                      maxCount={1}
+                      maxStyle={{
+                        color: "#f56a00",
+                        backgroundColor: "#fde3cf",
+                      }}
+                    >
+                      {taskDetail.assigness.map((member, index) => (
+                        <Avatar size="small" key={index} src={member.avatar} />
+                      ))}
+                    </Avatar.Group>
+                  </div>
+                </List.Item>
+              ))}
             </List>
           </Card>
         ))}
       </div>
+      <TaskDetail
+        value={showingTaskId}
+        show={modalShow}
+        handleCancel={handleClose}
+        refreshProjectDetail={fetchProjectDetail}
+      />
     </div>
   );
 }

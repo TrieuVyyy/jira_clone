@@ -20,7 +20,6 @@ import AddMember from "./AddMember";
 
 export default function ListProject() {
   const [projectList, setProjectList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [editedProject, setEditedProject] = useState([]);
 
   const fetchProjectList = () => {
@@ -28,16 +27,13 @@ export default function ListProject() {
       .get("/api/Project/getAllProject")
       .then((res) => {
         setProjectList(res.data.content);
-        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    setIsLoading(true);
     fetchProjectList();
   }, []);
 
@@ -80,11 +76,11 @@ export default function ListProject() {
       title: "Members",
       dataIndex: "members",
       key: "members",
-      render: (members) => (
+      render: (members, record) => (
         <div className="flex items-center">
           <Popover
             title="Members"
-            key={members.userId}
+            key={record.id}
             content={
               <div
                 style={{
@@ -116,12 +112,14 @@ export default function ListProject() {
                     {
                       title: "",
                       key: "action",
-                      render: (_, record) => {
+                      render: (member) => {
                         return (
                           <Popconfirm
                             title="Delete the member"
                             description="Are you sure to delete this member?"
-                            onConfirm={() => handleRemoveMember(record.id)}
+                            onConfirm={() =>
+                              handleRemoveMember(member.userId, record.id)
+                            }
                             okText="Yes"
                             cancelText="No"
                           >
@@ -150,7 +148,7 @@ export default function ListProject() {
                   <Avatar key={index} src={member.avatar} />
                 ))}
               </Avatar.Group>
-              <AddMember />
+              <AddMember projectId={record.id} refreshProjectList={fetchProjectList}/>
             </div>
           </Popover>
         </div>
@@ -206,12 +204,16 @@ export default function ListProject() {
   ];
 
   //xóa member trong project
-  const handleRemoveMember = (id) => {
+  const handleRemoveMember = (userId, projectId) => {
+    const member = {
+      userId,
+      projectId,
+    };
     https
-      .post(`/api/Project/removeUserFromProject?project=${id}`)
+      .post(`/api/Project/removeUserFromProject?project`, member)
       .then((res) => {
         message.success("Member removed successfully");
-        // fetchProjectList();
+        fetchProjectList();
       })
       .catch((err) => {
         console.log(err);
@@ -230,7 +232,6 @@ export default function ListProject() {
   };
 
   const handleEdit = (e, record) => {
-    // const projectId = record.id;
     if (record) {
       setEditedProject({
         id: record.id,
@@ -354,17 +355,15 @@ export default function ListProject() {
           + Add Project
         </Link>
       </div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <Table
-          columns={columns}
-          dataSource={projectList}
-          scroll={{
-            y: 400,
-          }}
-        />
-      )}
+
+      <Table
+        columns={columns}
+        dataSource={projectList}
+        scroll={{
+          y: 400,
+        }}
+      />
+
       <EditProject visible={isEditing} initialValues={editedProject} />
     </div>
   );

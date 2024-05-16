@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Select, Space } from "antd";
+import { Select } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { https } from "../../service/api";
 
-export default function Assignees() {
+export default function Assignees(props) {
+  const {projectId, name, onSelect} = props;
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
+    if (projectId) {
     https
-      .get("/api/Users/getUser")
+      .get(`/api/Users/getUserByProjectId?idProject=${projectId}`)
       .then((res) => {
         console.log(res.data);
         setUserList(res.data.content);
@@ -16,7 +18,8 @@ export default function Assignees() {
       .catch((err) => {
         console.log(err);
       });
-  });
+    }
+  }, [projectId]);
   const [value, setValue] = React.useState([]);
   const suffix = (
     <>
@@ -24,17 +27,11 @@ export default function Assignees() {
       <DownOutlined />
     </>
   );
+  
+  useEffect(() => {
+    onSelect(value)
+  }, [value])
 
-  const handleAssignUserTask = () => {
-    https
-      .post(`/api/Project/assignUserTask`)
-      .then((res) => {
-        // setUserList()
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   return (
     <Select
       mode="multiple"
@@ -45,12 +42,12 @@ export default function Assignees() {
       onChange={setValue}
       suffixIcon={suffix}
       placeholder="Please select user"
+      name={name}
     >
       {userList.map((user) => (
         <Select.Option
           key={user.userId}
           value={user.userId}
-          onClick={handleAssignUserTask}
         >
           {user.name}
         </Select.Option>
