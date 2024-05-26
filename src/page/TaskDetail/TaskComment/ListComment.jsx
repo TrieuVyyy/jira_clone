@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button } from "antd";
+import { Avatar, Button, message, Popconfirm } from "antd";
 import { https } from "../../../service/api";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default function ListComment({ taskId }) {
   const [formData, setFormData] = useState([]);
   const [listComment, setListComment] = useState([]);
   const [showButtons, setShowButtons] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState(null);
 
   useEffect(() => {
     https
@@ -27,41 +26,92 @@ export default function ListComment({ taskId }) {
   };
 
   const handleCancel = () => {
-    setFormData({ comment: "" });
+    setFormData({ contentComment: "" });
     setShowButtons(false);
+    setEditingCommentId(null);
   };
 
-  const handleAdd = () => {
+  //tạo cmt
+  const handleInsert = (e) => {
+    e.preventDefault();
     https
-      .post("/api/Comment/insertComment", formData)
+      .post("/api/Comment/insertComment", {
+        taskId,
+        ...formData,
+      })
       .then((res) => {
-        console.log(res.data.content);
-        // setFormData(res.data.content);
+        setListComment([res.data.content, ...listComment]);
+        setFormData({ contentComment: "" });
+        setShowButtons(false);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  const handleEditClick = (comment) => {
+    setFormData({ contentComment: comment.contentComment });
+    setEditingCommentId(comment.id);
+  };
+
+  //sửa cmt
+  const handleUpdate = () => {
+    https
+      .put(`/api/Comment/updateComment?id=${editingCommentId}`, {
+        taskId,
+        ...formData,
+      })
+      .then((res) => {
+        const updatedComments = listComment.map((comment) =>
+          comment.id === editingCommentId ? res.data.content : comment
+        );
+        setListComment(updatedComments);
+        message.success("Update successful");
+        setEditingCommentId(null);
+        setFormData({ contentComment: "" });
+        setShowButtons(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Failed");
+      });
+  };
+
+  //xóa cmt
+  const handleDelete = (id) => {
+    https
+      .delete(`/api/Comment/deleteComment?idComment=${id}`)
+      .then((res) => {
+        message.success("Delete successful");
+        setListComment(listComment.filter((comment) => comment.id !== id));
+      })
+      .catch((err) => {
+        message.error("Delete failed");
+      });
+  };
+
   return (
-    <>
-      <div className="input-cmt flex space-x-3">
+    <div className="comment-section space-y-3">
+      <div className="input-cmt flex items-center space-x-3">
         <Avatar />
         <input
           type="text"
           style={{ width: "100%" }}
           className="form-control"
-          name="comment"
-          value={formData.comment}
+          name="contentComment"
           onChange={handleOnChange}
           placeholder="Add a comment..."
           onFocus={() => setShowButtons(true)}
-          onBlur={() => setShowButtons(false)}
         />
       </div>
       {showButtons && (
-        <div className="flex ml-10 pt-2 space-x-5">
-          <Button type="primary" className="bg-blue-600" size="small" onClick={handleAdd}>
+        <div className="ml-10 flex items-center space-x-3">
+          <Button
+            type="primary"
+            className="bg-blue-600"
+            size="small"
+            onClick={handleInsert}
+          >
             Save
           </Button>
           <Button size="small" onClick={handleCancel}>
@@ -69,16 +119,62 @@ export default function ListComment({ taskId }) {
           </Button>
         </div>
       )}
-      {showButtons ? null : (
-        <div className="protip flex ml-10">
-          <strong className="text-xs ml-1">Pro tip:</strong>
-          <p className="text-xs ml-1">press</p>
-          <span className="text-xs font-extrabold ml-1">M</span>
-          <p className="text-xs ml-1">to comment</p>
+
+      {listComment.length > 0 && (
+        <div className="comments-list space-y-3">
+          {listComment.map((comment, index) => (
+            <div key={index} className="comment-item">
+              <div className="comment-userName space-x-2">
+                <Avatar src={comment.user?.avatar} />
+                <span className="font-medium">{comment.user?.name}</span>
+              </div>
+              <div className="comment-content ml-10 space-y-2">
+                {editingCommentId === comment.id ? (
+                  <>
+                    <input
+                      type="text"
+                      name="contentComment"
+                      value={formData.contentComment}
+                      onChange={handleOnChange}
+                    />
+                    <div className="flex items-center space-x-3">
+                      <Button
+                        type="primary"
+                        className="bg-blue-600"
+                        size="small"
+                        onClick={handleUpdate}
+                      >
+                        Save
+                      </Button>
+                      <Button size="small" onClick={handleCancel}>
+                        Cancel
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <span>{comment.contentComment}</span>
+                    <div className="flex items-center space-x-3">
+                      <button onClick={() => handleEditClick(comment)}>
+                        Edit
+                      </button>
+                      <Popconfirm
+                        title="Delete the comment"
+                        description="Are you sure to delete this comment?"
+                        onConfirm={() => handleDelete(comment.id)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <button>Delete</button>
+                      </Popconfirm>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
-
-      
-    </>
+    </div>
   );
 }

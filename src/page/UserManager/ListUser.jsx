@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { https } from "../../service/api";
 import { message, Space, Input, Table, Popconfirm, Drawer, Button } from "antd";
-import { Link } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
 
 export default function ListUser() {
@@ -23,6 +22,19 @@ export default function ListUser() {
   useEffect(() => {
     fetchUserList();
   }, []);
+
+  //tìm user theo tên
+  const handleSearch = (value) => {
+    setSearch(value);
+    if (value === "") {
+      fetchUserList();
+    } else {
+      const filteredUsers = userList.filter((user) =>
+        user.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setUserList(filteredUsers);
+    }
+  };
 
   const columns = [
     {
@@ -92,19 +104,6 @@ export default function ListUser() {
       },
     },
   ];
-
-  //tìm user theo têm
-  const handleSearch = (value) => {
-    setSearch(value);
-    if (value === "") {
-      fetchUserList();
-    } else {
-      const filteredUsers = userList.filter((user) =>
-        user.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setUserList(filteredUsers);
-    }
-  };
 
   //mở Drawer Edit
   const [isEditing, setIsEditing] = useState(false);
@@ -218,7 +217,6 @@ export default function ListUser() {
     https
       .delete(`/api/Users/deleteUser?id=${userId}`)
       .then((res) => {
-        console.log(res.data);
         message.success("Delete successful");
         fetchUserList();
       })

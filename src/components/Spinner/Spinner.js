@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from "react-redux";
-import { RingLoader } from "react-spinners";
+import { PropagateLoader } from "react-spinners";
 
 export default function Spinner() {
   const  isLoading = useSelector(state => state.spinnerReducer.isLoading);
@@ -9,7 +9,7 @@ export default function Spinner() {
       style={{
         width: "100vw",
         height: "100vh",
-        background: "#f0ead2",
+        background: "#708F96",
         position: "fixed",
         top: 0,
         left: 0,
@@ -19,8 +19,7 @@ export default function Spinner() {
         alignItems: "center",
       }}
     >
-        {/* coolors  */}
-        <RingLoader color="#36d7b7" />
+        <PropagateLoader color="#E0D8CC" />
     </div>
   ) : (
     <></>

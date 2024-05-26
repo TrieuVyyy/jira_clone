@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Modal, Tag, message, Select } from "antd";
+import { Avatar, Button, Modal, Tag, message, Popover, List } from "antd";
 import { SendOutlined, LinkOutlined, DeleteOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -9,20 +9,23 @@ import ListComment from "./TaskComment/ListComment";
 import Status from "../CreateTask/Status";
 import Priority from "../CreateTask/Priority";
 import TimeTracking from "../CreateTask/TimeTracking";
-import Assignees from "../CreateTask/Assignees";
 
 export default function TaskDetail(props) {
-  const { value, show, handleCancel, refreshProjectDetail } = props;
+  const {
+    value,
+    show,
+    handleCancel,
+    refreshProjectDetail,
+    listMember,
+  } = props;
   const [taskDetail, setTaskDetail] = useState([]);
-  const [formData, setFormData] = useState();
+  const [formData, setFormData] = useState([]);
   const [showCKE, setShowCKE] = useState(false);
-  const [showAssignees, setShowAssignees] = useState(false);
 
   const fetchTaskDetail = () => {
     https
       .get(`/api/Project/getTaskDetail?taskId=${value}`)
       .then((res) => {
-        console.log(res.data);
         setTaskDetail(res.data.content);
       })
       .catch((err) => {
@@ -35,18 +38,11 @@ export default function TaskDetail(props) {
   }, [value]);
 
   const handleOnChange = (e) => {
-    setFormData({ ...formData, [e.target.issue]: e.target.value });
-  };
-
-  const handleSelect = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleClose = () => {
-    setFormData();
+    setFormData([]);
     setShowCKE(false);
   };
 
@@ -71,7 +67,7 @@ export default function TaskDetail(props) {
       userId,
     };
     https
-      .post(`/api/Project/removeUserFromTask?taskId`, user)
+      .post("/api/Project/removeUserFromTask", user)
       .then((res) => {
         message.success("User removed successfully");
         fetchTaskDetail();
@@ -81,23 +77,148 @@ export default function TaskDetail(props) {
       });
   };
 
-  const toggleAssignees = () => {
-    setShowAssignees(!showAssignees);
-  };
+  const availableMembers = listMember
+    ? listMember.filter(
+        (member) =>
+          !taskDetail.assigness?.some(
+            (assignee) => assignee.id === member.userId
+          )
+      )
+    : [];
 
   //thêm user trong task
-  const handleAssignUserTask = (userId, taskId) => {
-    const user = {
-      taskId,
+  const handleAssignUserTask = (userId) => {
+    const assignUser = {
+      taskId: taskDetail.taskId,
       userId,
     };
     https
-      .post(`/api/Project/assignUserTask?taskUser`, user)
+      .post("/api/Project/assignUserTask", assignUser)
       .then((res) => {
-        console.log(res.data);
+        message.success("Added successfully");
+        setTaskDetail((prevState) => ({
+          ...prevState,
+          assigness: [
+            ...prevState.assigness,
+            {
+              id: userId,
+              ...availableMembers.find((member) => member.userId === userId),
+            },
+          ],
+        }));
+        fetchTaskDetail();
+        refreshProjectDetail();
+      })
+      .catch((err) => {
+        message.error("You are not creator");
+      });
+  };
+
+  //update Status
+  const handleUpdateStatus = (e) => {
+    const statusId = e.target.value;
+    const status = {
+      taskId: taskDetail.taskId,
+      statusId,
+    };
+    https
+      .put("/api/Project/updateStatus", status)
+      .then((res) => {
+        setTaskDetail((prevState) => ({
+          ...prevState,
+          statusId,
+        }));
+        message.success("Updated successfully");
+        refreshProjectDetail();
+      })
+      .catch((err) => {
+        message.error("Failed to update ");
+      });
+  };
+
+  //update Priority
+  const handleUpdatePriority = (e) => {
+    const priorityId = e.target.value;
+    const priority = {
+      taskId: taskDetail.taskId,
+      priorityId,
+    };
+
+    https
+      .put("/api/Project/updatePriority", priority)
+      .then((res) => {
+        setTaskDetail((prevState) => ({
+          ...prevState,
+          priorityTask: {
+            ...prevState.priorityTask,
+            priorityId,
+          },
+        }));
+        message.success("Updated successfully");
+        refreshProjectDetail();
+      })
+      .catch((err) => {
+        message.error("You are not assigned");
+      });
+  };
+
+  //update Des
+  const handleUpdateDes = () => {
+    const updatedDescription = formData.description;
+    const des = {
+      taskId: taskDetail.taskId,
+      description: updatedDescription,
+    };
+
+    https
+      .put("/api/Project/updateDescription", des)
+      .then((res) => {
+        message.success('"Updated successfully"');
+        setShowCKE(false);
         fetchTaskDetail();
       })
       .catch((err) => {
+        message.error("Failed to update ");
+        console.log(err);
+      });
+  };
+
+  //update ORIGINAL ESTIMATE
+  const handleUpdateEstimate = () => {
+    const updatedEstimate = formData.originalEstimate;
+    const estimate = {
+      taskId: taskDetail.taskId,
+      originalEstimate: updatedEstimate,
+    };
+
+    https
+      .put("/api/Project/updateEstimate", estimate)
+      .then((res) => {
+        message.success('"Updated successfully"');
+        fetchTaskDetail();
+      })
+      .catch((err) => {
+        message.error("You are not assigned");
+        console.log(err);
+      });
+  };
+
+  //update Time Tracking
+  const handleUpdateTimeTracking = (timeTrackingData) => {
+    const time = {
+      taskId: taskDetail.taskId,
+      timeTrackingSpent: timeTrackingData.timeSpent,
+      timeTrackingRemaining: timeTrackingData.timeRemaining,
+    };
+
+    https
+      .put("/api/Project/updateTimeTracking", time)
+      .then((res) => {
+        message.success('"Updated successfully"');
+        fetchTaskDetail();
+      })
+      .catch((err) => {
+        message.error("You are not assigned");
         console.log(err);
       });
   };
@@ -114,9 +235,7 @@ export default function TaskDetail(props) {
         <div className="form-left">
           <div className="flex items-center pb-2 space-x-3">
             <TaskType
-              value={taskDetail?.taskTypeDetail?.id}
               name="taskTypeDetail"
-              onSelect={handleSelect}
               defaultValue={taskDetail?.taskTypeDetail?.id}
             />
             <span>{taskDetail?.taskName}</span>
@@ -140,12 +259,16 @@ export default function TaskDetail(props) {
                   data={taskDetail?.description}
                   onChange={(event, editor) => {
                     const data = editor.getData();
-                    setTaskDetail({ ...taskDetail, description: data });
                     setFormData({ ...formData, description: data });
                   }}
                 />
                 <div className="flex space-x-5 pt-2">
-                  <Button type="primary" className="bg-blue-600" size="small">
+                  <Button
+                    onClick={handleUpdateDes}
+                    type="primary"
+                    className="bg-blue-600"
+                    size="small"
+                  >
                     Save
                   </Button>
                   <Button size="small" onClick={handleClose}>
@@ -187,9 +310,8 @@ export default function TaskDetail(props) {
           </div>
           <label className="text-sm font-medium py-3">STATUS</label>
           <Status
-            value={taskDetail?.statusId}
+            onSelect={handleUpdateStatus}
             name="statusId"
-            onSelect={handleSelect}
             defaultValue={taskDetail?.statusId}
           />
 
@@ -207,23 +329,41 @@ export default function TaskDetail(props) {
                 </button>
               </Tag>
             ))}
-            {showAssignees && (
-              <Assignees
-                projectId={taskDetail?.projectId}
-                onSelect={handleAssignUserTask}
-              />
-            )}
 
-            <button className="text-blue-600 pt-2" onClick={toggleAssignees}>
-              {showAssignees ? "Close" : "+ Add more"}
-            </button>
+            <Popover
+              trigger="click"
+              content={
+                <List
+                  style={{
+                    width: "200px",
+                    maxHeight: "200px",
+                    overflowY: "scroll",
+                    overflowX: "hidden",
+                  }}
+                  dataSource={availableMembers}
+                  renderItem={(listMember) => (
+                    <List.Item
+                      key={listMember.userId}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleAssignUserTask(listMember.userId)}
+                    >
+                      <List.Item.Meta
+                        avatar={<Avatar src={listMember.avatar} />}
+                        title={listMember.name}
+                      />
+                    </List.Item>
+                  )}
+                />
+              }
+            >
+              <Button className="text-blue-500">+Add more</Button>
+            </Popover>
           </div>
 
           <label className="text-sm font-medium py-3">PRIORITY</label>
           <Priority
-            value={taskDetail?.priorityTask?.priorityId}
-            name="taskTypeDetail"
-            onSelect={handleSelect}
+            onSelect={handleUpdatePriority}
+            name="priorityId"
             defaultValue={taskDetail?.priorityTask?.priorityId}
           />
 
@@ -231,20 +371,26 @@ export default function TaskDetail(props) {
             ORIGINAL ESTIMATE (HOURS)
           </label>
           <input
-            value={taskDetail?.originalEstimate}
+            value={formData.originalEstimate || taskDetail?.originalEstimate}
             name="originalEstimate"
             type="number"
             min="0"
             style={{ width: "100%" }}
             className="form-control"
             onChange={handleOnChange}
+            onBlur={handleUpdateEstimate}
           />
 
           <label className="text-sm font-medium py-3">TIME TRACKING</label>
           <TimeTracking
-            value={taskDetail?.timeTrackingSpent}
-            onChange={handleOnChange}
+            timeSpent={taskDetail?.timeTrackingSpent}
+            timeRemaining={taskDetail?.timeTrackingRemaining}
+            onChange={handleUpdateTimeTracking}
           />
+
+          <hr />
+          <p className="text-xs text-gray-500">Create at 2 months ago</p>
+          <p className="text-xs text-gray-500">Updated at 9 days ago</p>
         </div>
       </div>
     </Modal>

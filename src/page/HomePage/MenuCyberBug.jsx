@@ -22,7 +22,7 @@ const items = [
   {
     key: "project",
     icon: <DatabaseOutlined />,
-    label: <Link to="/project" className="text-decoration-none">Project Manager</Link>,
+    label: <Link to="/projectmanager" className="text-decoration-none">Project Manager</Link>,
   },
   {
     key: "create",

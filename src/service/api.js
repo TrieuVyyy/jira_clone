@@ -5,7 +5,6 @@ import store from "../redux/config";
 import { setLoadingOff, setLoadingOn } from "../redux/spinnerSlice";
 
 const accessToken=localStorage.getItem("USER_TOKEN")
-console.log('accessToken',accessToken)
 
 export let https = axios.create({
   baseURL: "https://jiranew.cybersoft.edu.vn",

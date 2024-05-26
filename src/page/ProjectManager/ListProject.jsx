@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { https } from "../../service/api";
 import {
   message,
+  Input,
   Space,
   Table,
   Avatar,
@@ -11,6 +12,7 @@ import {
   Tag,
   Popconfirm,
 } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -20,6 +22,7 @@ import AddMember from "./AddMember";
 
 export default function ListProject() {
   const [projectList, setProjectList] = useState([]);
+  const [search, setSearch] = useState("");
   const [editedProject, setEditedProject] = useState([]);
 
   const fetchProjectList = () => {
@@ -36,6 +39,19 @@ export default function ListProject() {
   useEffect(() => {
     fetchProjectList();
   }, []);
+
+  //tìm project theo tên
+  const handleSearch = (value) => {
+    setSearch(value);
+    if (value === "") {
+      fetchProjectList();
+    } else {
+      const filtered = projectList.filter((project) =>
+        project.projectName.toLowerCase().includes(value.toLowerCase())
+      );
+      setProjectList(filtered);
+    }
+  };
 
   const columns = [
     {
@@ -148,7 +164,10 @@ export default function ListProject() {
                   <Avatar key={index} src={member.avatar} />
                 ))}
               </Avatar.Group>
-              <AddMember projectId={record.id} refreshProjectList={fetchProjectList}/>
+              <AddMember
+                projectId={record.id}
+                refreshProjectList={fetchProjectList}
+              />
             </div>
           </Popover>
         </div>
@@ -217,7 +236,7 @@ export default function ListProject() {
       })
       .catch((err) => {
         console.log(err);
-        message.error("Failed to remove member");
+        message.error("You are not the project creator");
       });
   };
 
@@ -270,11 +289,9 @@ export default function ListProject() {
           message.success("Update successful");
           setIsEditing(false);
           fetchProjectList();
-          console.log(res.data);
         })
         .catch((err) => {
-          console.log(err);
-          message.error("Update failed");
+          message.error("You are not the project creator");
         });
     };
 
@@ -343,14 +360,22 @@ export default function ListProject() {
         fetchProjectList();
       })
       .catch((err) => {
-        message.error("Delete failed");
+        message.error("You are not the project creator");
       });
   };
 
   return (
     <div>
       <h3 className=" text-gray-500">Project Managerment</h3>
-      <div className="flex justify-content-end">
+      <div className="flex justify-between items-center">
+        <Input
+          className="my-4"
+          prefix={<SearchOutlined />}
+          style={{ width: "300px", height: "40px" }}
+          placeholder="Search Project..."
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
+        />
         <Link to="/createproject" className="btn btn-success my-2">
           + Add Project
         </Link>

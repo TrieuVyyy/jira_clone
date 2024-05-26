@@ -12,7 +12,6 @@ export default function Assignees(props) {
     https
       .get(`/api/Users/getUserByProjectId?idProject=${projectId}`)
       .then((res) => {
-        console.log(res.data);
         setUserList(res.data.content);
       })
       .catch((err) => {

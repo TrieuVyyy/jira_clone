@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { Layout, Menu, theme } from "antd";
-import {
-  QuestionCircleOutlined,
-  SearchOutlined,
-  PlusCircleOutlined,
-} from "@ant-design/icons";
+import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { SiJirasoftware } from "react-icons/si";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MenuCyberBug from "../HomePage/MenuCyberBug";
-import Header from "./Header";
+import { logOut } from "../../redux/userSlice";
 const { Content, Sider } = Layout;
 
 const items = [
@@ -39,7 +35,28 @@ export default function HomeTemplate() {
   };
 
   const navgigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.userSlice.user);
+  let handleLogout = () => {
+    dispatch(logOut());
+  };
+  let renderMenu = () => {
+    let cssBtn =
+      "rounded py-1 border-1 text-gray-300 text-decoration-none hover:text-white";
+    if (user) {
+      // đã đăng nhập
+      return (
+        <div className="grid grid-rows-2 space-y-2">
+          <span className="text-gray-300">
+            Hello <span className="uppercase">{user.name}</span> !
+          </span>
+          <button className={cssBtn} onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      );
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -71,6 +88,7 @@ export default function HomeTemplate() {
               items={items}
             />
           </div>
+          <div className="text-center pt-3">{renderMenu()}</div>
         </Sider>
         <MenuCyberBug />
         <Layout
@@ -78,7 +96,6 @@ export default function HomeTemplate() {
             padding: "0 24px 24px",
           }}
         >
-          <Header />
 
           <Content
             style={{

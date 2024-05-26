@@ -7,33 +7,25 @@ export default function AddMember(props) {
   const { projectId, refreshProjectList } = props;
   const [listUser, setListUser] = useState([]);
   const [search, setSearch] = useState("");
-  const [showList, setShowList] = useState(false);
 
   const fectchUserList = () => {
-    if (showList) {
-
-      https
-        .get("/api/Users/getUser")
-        .then((res) => {
-          const filteredUsers = res.data.content.filter((user) =>
-            user.name.toLowerCase().includes(search.toLowerCase())
-          );
-          setListUser(filteredUsers);
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    https
+      .get("/api/Users/getUser")
+      .then((res) => {
+        const filteredUsers = res.data.content.filter((user) =>
+          user.name.toLowerCase().includes(search.toLowerCase())
+        );
+        setListUser(filteredUsers);
+        console.log(res.data.content)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
     fectchUserList();
-  }, [showList, search]);
-
-  const toggleList = () => {
-    setShowList(!showList);
-  };
+  }, [search]);
 
   //add member
   const handleAddMember = (id) => {
@@ -44,13 +36,11 @@ export default function AddMember(props) {
     https
       .post("/api/Project/assignUserProject?project", member)
       .then((res) => {
-        console.log(res.data);
         message.success("Add member successful");
-        setShowList(false);
         refreshProjectList();
       })
       .catch((err) => {
-        message.error("Add member faild");
+        message.error("This is not your project");
       });
   };
 
@@ -61,7 +51,6 @@ export default function AddMember(props) {
         style={{ width: "100%" }}
         placeholder="Search Member"
         value={search}
-        onClick={toggleList}
         onChange={(e) => setSearch(e.target.value)}
       />
       <div

@@ -12,11 +12,6 @@ export default function ProjectDetail() {
 
   let { id } = useParams();
 
-  const handleModalOpen = (taskId) => {
-    setModalShow(true);
-    setShowingTaskId(taskId);
-  };
-
   const fetchProjectDetail = () => {
     https
       .get(`/api/Project/getProjectDetail?id=${id}`)
@@ -31,6 +26,12 @@ export default function ProjectDetail() {
   useEffect(() => {
     fetchProjectDetail();
   }, [id]);
+ 
+  const handleModalOpen = (taskId) => {
+    setModalShow(true);
+    setShowingTaskId(taskId);
+  };
+   
   const handleClose = () => {
     setModalShow(false);
   };
@@ -142,6 +143,8 @@ export default function ProjectDetail() {
         show={modalShow}
         handleCancel={handleClose}
         refreshProjectDetail={fetchProjectDetail}
+        creator={detail?.creator?.name}
+        listMember={detail?.members}
       />
     </div>
   );

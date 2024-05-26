@@ -14,7 +14,10 @@ import TimeTracking from "./TimeTracking";
 export default function CreateTask() {
   const navigate = useNavigate();
   const [projectList, setProjectList] = useState([]);
-  const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState({
+    timeTrackingSpent: 0,
+    timeTrackingRemaining: 0,
+  });
   const [selectedProjectId, setSelectedProjectId] = useState();
   const user = useSelector((state) => state.userSlice.user);
 
@@ -42,6 +45,9 @@ export default function CreateTask() {
   };
 
   const handleChange = (e) => {
+    if (!e.target || !e.target.name) {
+      return;
+    }
     const isNumber =
       e.target.name === "originalEstimate" ||
       e.target.name === "timeTrackingSpent" ||
@@ -52,6 +58,14 @@ export default function CreateTask() {
     const value = isNumber ? parseInt(e.target.value) : e.target.value;
 
     setFormData({ ...formData, [e.target.name]: value });
+  };
+
+  const handleTimeTrackingChange = ({ timeSpent, timeRemaining }) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      timeTrackingSpent: timeSpent,
+      timeTrackingRemaining: timeRemaining,
+    }));
   };
 
   //tạo task mới
@@ -137,7 +151,11 @@ export default function CreateTask() {
             <TaskType onSelect={handleChange} />
 
             <label className="text-sm font-medium pt-2">Time Tracking</label>
-            <TimeTracking onChange={handleChange} />
+            <TimeTracking
+              onChange={handleTimeTrackingChange}
+              timeSpent={formData.timeTrackingSpent}
+              timeRemaining={formData.timeTrackingRemaining}
+            />
           </div>
         </div>
 

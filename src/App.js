@@ -18,16 +18,15 @@ function App() {
       <Spinner />
       <BrowserRouter>
         <Routes>
-
-          <Route path="/signup" element={<SignupPage />}/>
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<HomeTemplate />}>
-            <Route index element={<CyberBugs />} />
+            <Route path="/" element={<CyberBugs />} />
             <Route path="/createproject" element={<CreateProject />} />
-            <Route path="/project" element={<ProjectManager />} />
+            <Route path="/projectmanager" element={<ProjectManager />} />
             <Route path="/project-detail/:id" element={<ProjectDetail />} />
             <Route path="/createtask" element={<CreateTask />} />
-            <Route path="usermanager" element={<UserManager />}/>
+            <Route path="usermanager" element={<UserManager />} />
           </Route>
         </Routes>
       </BrowserRouter>
